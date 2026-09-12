@@ -1043,6 +1043,125 @@
             color: #777;
         }
 
+        .car-filters {
+            display: flex;
+            align-items: end;
+            gap: 9px;
+            width: min(460px, 100%);
+            margin: 0;
+            padding: 12px 14px;
+            border: 1px solid #edf0f3;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-group {
+            flex: 1;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #555;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .filter-group select {
+            width: 100%;
+            height: 36px;
+            padding: 0 8px;
+            border: 1px solid #dfe3e8;
+            border-radius: 6px;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            font: inherit;
+            outline: none;
+        }
+
+        .filter-group select:focus {
+            border-color: #ff4d30;
+            box-shadow: 0 0 0 3px rgba(255, 77, 48, 0.1);
+        }
+
+        .clear-filters-btn {
+            height: 36px;
+            padding: 0 11px;
+            border: 1px solid #ff4d30;
+            border-radius: 6px;
+            background: white;
+            color: #ff4d30;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .clear-filters-btn:hover {
+            background: #fff2ef;
+        }
+
+        .filter-result {
+            max-width: 1200px;
+            min-height: 20px;
+            margin: 0 auto 22px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .collection-toolbar {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 22px;
+        }
+
+        .collection-toolbar .section-heading {
+            flex: 1;
+            margin-bottom: 0;
+            text-align: left;
+        }
+
+        .collection-toolbar .filter-result {
+            margin: 8px 0 0;
+            text-align: right;
+        }
+
+        .car-card[hidden] {
+            display: none;
+        }
+
+        @media (max-width: 650px) {
+            .collection-toolbar {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 22px;
+            }
+
+            .collection-toolbar .section-heading {
+                text-align: center;
+            }
+
+            .collection-toolbar .filter-result {
+                position: static;
+                margin: -12px 0 22px;
+                text-align: center;
+            }
+
+            .car-filters {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .clear-filters-btn {
+                width: 100%;
+            }
+        }
+
         /* ================= CARS ================= */
 
         .car-container {
@@ -1718,12 +1837,44 @@
 
     <section class="cars-section" id="cars">
 
-        <div class="section-heading">
-            <p>OUR COLLECTION</p>
-            <h2>Popular Rental Cars</h2>
-            <span>
-                Choose the car that fits your journey.
-            </span>
+        <div class="collection-toolbar">
+            <div class="section-heading">
+                <p>OUR COLLECTION</p>
+                <h2>Popular Rental Cars</h2>
+                <span>
+                    Choose the car that fits your journey.
+                </span>
+            </div>
+
+            <div>
+                <div class="car-filters" aria-label="Filter cars">
+                    <div class="filter-group">
+                        <label for="carTypeFilter">Car Type</label>
+                        <select id="carTypeFilter">
+                            <option value="all">All types</option>
+                            <option value="sedan">Sedan</option>
+                            <option value="suv">SUV</option>
+                            <option value="muv">MUV</option>
+                            <option value="hatchback">Hatchback</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="carPriceFilter">Price per day</label>
+                        <select id="carPriceFilter">
+                            <option value="all">Any price</option>
+                            <option value="budget">Under ₹2,000</option>
+                            <option value="standard">₹2,000 - ₹3,000</option>
+                            <option value="premium">Above ₹3,000</option>
+                        </select>
+                    </div>
+
+                    <button class="clear-filters-btn" id="clearFiltersButton" type="button">
+                        Clear filters
+                    </button>
+                </div>
+                <p class="filter-result" id="filterResult" role="status"></p>
+            </div>
         </div>
 
         <div class="car-container">
@@ -2493,6 +2644,7 @@
             : "http://localhost:3000/api";
 
         let pendingCarName = null;
+        let availableCarNames = null;
 
         async function readJsonResponse(response) {
             const contentType = response.headers.get("content-type") || "";
@@ -2558,11 +2710,8 @@
                     throw new Error(result.error || "Unable to search cars.");
                 }
 
-                const availableNames = new Set(result.cars.map(car => car.name.toLowerCase()));
-                document.querySelectorAll(".car-card").forEach(card => {
-                    const carName = card.querySelector("h3")?.textContent.trim().toLowerCase();
-                    card.hidden = carName && !availableNames.has(carName);
-                });
+                availableCarNames = new Set(result.cars.map(car => car.name.toLowerCase()));
+                applyCarFilters();
 
                 document
                     .getElementById("cars")
@@ -2577,6 +2726,44 @@
                 searchButton.textContent = "Search Cars";
             }
         }
+
+        function matchesPrice(price, priceFilter) {
+            if (priceFilter === "budget") return price < 2000;
+            if (priceFilter === "standard") return price >= 2000 && price <= 3000;
+            if (priceFilter === "premium") return price > 3000;
+            return true;
+        }
+
+        function applyCarFilters() {
+            const typeFilter = document.getElementById("carTypeFilter").value;
+            const priceFilter = document.getElementById("carPriceFilter").value;
+            let visibleCount = 0;
+
+            document.querySelectorAll(".car-card").forEach(card => {
+                const carName = card.querySelector("h3")?.textContent.trim().toLowerCase() || "";
+                const carType = card.querySelector(".car-type")?.textContent.trim().toLowerCase() || "";
+                const priceText = card.querySelector(".price strong")?.textContent || "";
+                const price = Number(priceText.replace(/[^0-9]/g, ""));
+                const matchesAvailability = !availableCarNames || availableCarNames.has(carName);
+                const matchesType = typeFilter === "all" || carType.includes(typeFilter) ||
+                    (typeFilter === "muv" && carType.includes("mpv"));
+                const matchesSelectedPrice = matchesPrice(price, priceFilter);
+                card.hidden = !(matchesAvailability && matchesType && matchesSelectedPrice);
+                if (!card.hidden) visibleCount += 1;
+            });
+
+            const result = document.getElementById("filterResult");
+            const hasFilters = typeFilter !== "all" || priceFilter !== "all";
+            result.textContent = hasFilters ? `${visibleCount} car(s) match your filters.` : "";
+        }
+
+        document.getElementById("carTypeFilter").addEventListener("change", applyCarFilters);
+        document.getElementById("carPriceFilter").addEventListener("change", applyCarFilters);
+        document.getElementById("clearFiltersButton").addEventListener("click", function () {
+            document.getElementById("carTypeFilter").value = "all";
+            document.getElementById("carPriceFilter").value = "all";
+            applyCarFilters();
+        });
 
         const pickupDateInput = document.getElementById("pickupDate");
         const returnDateInput = document.getElementById("returnDate");
