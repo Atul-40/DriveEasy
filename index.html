@@ -51,13 +51,27 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             font-size: 25px;
             font-weight: 700;
             color: #ff4d30;
+            letter-spacing: -0.03em;
         }
 
-        .logo span {
-            margin-right: 5px;
+        .logo-mark {
+            width: 46px;
+            height: 28px;
+            display: inline-block;
+            flex-shrink: 0;
+            filter: drop-shadow(0 4px 8px rgba(255, 77, 48, 0.18));
+        }
+
+        .logo-mark svg {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         .nav-links {
@@ -1005,6 +1019,62 @@
             opacity: 0.7;
         }
 
+        .hero-filters {
+            display: flex;
+            align-items: end;
+            gap: 10px;
+            width: min(760px, 100%);
+            margin: 210px auto 0;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.96);
+        }
+
+        .hero-filter-group {
+            flex: 1;
+        }
+
+        .hero-filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .hero-filter-group select {
+            width: 100%;
+            height: 36px;
+            padding: 0 8px;
+            border: 1px solid #dfe3e8;
+            border-radius: 5px;
+            background: white;
+            color: #333;
+            font: inherit;
+            outline: none;
+        }
+
+        .hero-filter-group select:focus {
+            border-color: #ff4d30;
+        }
+
+        .hero-filter-btn {
+            height: 36px;
+            padding: 0 13px;
+            border: 0;
+            border-radius: 5px;
+            background: #ff4d30;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .hero-filter-btn:hover {
+            background: #d9361e;
+        }
+
         .search-status {
             min-height: 22px;
             margin-top: 12px;
@@ -1123,7 +1193,7 @@
         .collection-toolbar .section-heading {
             flex: 1;
             margin-bottom: 0;
-            text-align: left;
+            text-align: center;
         }
 
         .collection-toolbar .filter-result {
@@ -1136,6 +1206,15 @@
         }
 
         @media (max-width: 650px) {
+            .hero-filters {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .hero-filter-btn {
+                width: 100%;
+            }
+
             .collection-toolbar {
                 align-items: stretch;
                 flex-direction: column;
@@ -1567,7 +1646,26 @@
         <nav class="navbar">
 
             <div class="logo">
-                <span>🚗</span> DriveEasy
+                <span class="logo-mark" aria-label="DriveEasy car logo">
+                    <svg viewBox="0 0 120 70" role="img" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="driveeasyBody" x1="0" x2="1">
+                                <stop offset="0%" stop-color="#ff684a" />
+                                <stop offset="100%" stop-color="#d92f1f" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M16 48L25 31C28 26 33 23 39 23H73C79 23 84 25 88 30L96 38H103C109 38 113 42 113 48V49C113 53 109 56 105 56H102C100 62 94 66 85 66H35C26 66 20 62 18 56H13C10 56 7 53 7 49V47C7 42 11 38 16 38H16Z" fill="url(#driveeasyBody)"/>
+                        <path d="M34 24L47 18H77C82 18 87 20 90 24L96 32H30L34 24Z" fill="#f5f8fb" opacity="0.94"/>
+                        <path d="M40 24L55 16H74L86 24" fill="none" stroke="#b5c9d8" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M33 39H91" stroke="#a72812" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+                        <circle cx="30" cy="56" r="12" fill="#1f2937"/>
+                        <circle cx="30" cy="56" r="5" fill="#e5e7eb"/>
+                        <circle cx="87" cy="56" r="12" fill="#1f2937"/>
+                        <circle cx="87" cy="56" r="5" fill="#e5e7eb"/>
+                        <path d="M98 41L106 41" stroke="#ffd76a" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <span>DriveEasy</span>
             </div>
 
             <ul class="nav-links" id="navLinks">
@@ -1682,8 +1780,30 @@
                 <p>Choose your dates and pick-up location to reserve this car.</p>
                 <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
                     <label for="bookingLocation">Pick-up location
-                        <input id="bookingLocation" type="text" list="delhiNcrCities" placeholder="Select a Delhi NCR city" required>
+                        <input id="bookingLocation" type="text" list="delhiNcrCities" placeholder="Select an NCR city" required>
                     </label>
+                    <datalist id="delhiNcrCities">
+                        <option value="Delhi"></option>
+                        <option value="New Delhi"></option>
+                        <option value="Noida"></option>
+                        <option value="Greater Noida"></option>
+                        <option value="Gurugram"></option>
+                        <option value="Gurgaon"></option>
+                        <option value="Ghaziabad"></option>
+                        <option value="Faridabad"></option>
+                        <option value="Indirapuram"></option>
+                        <option value="Dwarka"></option>
+                        <option value="Rohini"></option>
+                        <option value="Saket"></option>
+                        <option value="Connaught Place"></option>
+                        <option value="Karol Bagh"></option>
+                        <option value="Raj Nagar"></option>
+                        <option value="Vaishali"></option>
+                        <option value="Laxmi Nagar"></option>
+                        <option value="Mayur Vihar"></option>
+                        <option value="Nehru Place"></option>
+                        <option value="Surajkund"></option>
+                    </datalist>
                     <label for="bookingPickupDate">Pick-up date
                         <input id="bookingPickupDate" type="date" required>
                     </label>
@@ -1770,64 +1890,32 @@
                 affordable and comfortable journey.
             </p>
 
-            <!-- SEARCH BOX -->
-
-            <form class="search-box" id="searchForm" onsubmit="searchCars(event)">
-
-                <div class="input-group">
-                    <label>📍 Pick-up Location</label>
-                    <input
-                        type="text"
-                        id="location"
-                        placeholder="Enter location"
-                        list="delhiNcrCities"
-                        autocomplete="address-level2"
-                    >
-                    <datalist id="delhiNcrCities">
-                        <option value="Delhi"></option>
-                        <option value="New Delhi"></option>
-                        <option value="Noida"></option>
-                        <option value="Greater Noida"></option>
-                        <option value="Ghaziabad"></option>
-                        <option value="Gurugram"></option>
-                        <option value="Faridabad"></option>
-                        <option value="Bahadurgarh"></option>
-                        <option value="Sonipat"></option>
-                        <option value="Panipat"></option>
-                        <option value="Meerut"></option>
-                        <option value="Rohtak"></option>
-                        <option value="Rewari"></option>
-                        <option value="Bhiwadi"></option>
-                        <option value="Palwal"></option>
-                    </datalist>
+            <div class="hero-filters" aria-label="Filter cars">
+                <div class="hero-filter-group">
+                    <label for="heroCarTypeFilter">Car Type</label>
+                    <select id="heroCarTypeFilter">
+                        <option value="all">All types</option>
+                        <option value="sedan">Sedan</option>
+                        <option value="suv">SUV</option>
+                        <option value="muv">MUV</option>
+                        <option value="hatchback">Hatchback</option>
+                    </select>
                 </div>
 
-                <div class="input-group">
-                    <label>📅 Pick-up Date</label>
-                    <div class="date-control">
-                        <input type="date" id="pickupDate">
-                        <span class="date-hover-hint" aria-hidden="true"></span>
-                    </div>
+                <div class="hero-filter-group">
+                    <label for="heroCarPriceFilter">Price per day</label>
+                    <select id="heroCarPriceFilter">
+                        <option value="all">Any price</option>
+                        <option value="budget">Under ₹2,000</option>
+                        <option value="standard">₹2,000 - ₹3,000</option>
+                        <option value="premium">Above ₹3,000</option>
+                    </select>
                 </div>
 
-                <div class="input-group">
-                    <label>📅 Return Date</label>
-                    <div class="date-control">
-                        <input type="date" id="returnDate">
-                        <span class="date-hover-hint" aria-hidden="true"></span>
-                    </div>
-                </div>
-
-                <button
-                    class="search-btn"
-                    id="searchButton"
-                    type="submit"
-                >
-                    Search Cars
+                <button class="hero-filter-btn" type="button" onclick="applyHeroFilters()">
+                    Apply Filter
                 </button>
-
-            </form>
-            <p class="search-status" id="searchStatus" role="status"></p>
+            </div>
 
         </div>
 
@@ -1846,35 +1934,6 @@
                 </span>
             </div>
 
-            <div>
-                <div class="car-filters" aria-label="Filter cars">
-                    <div class="filter-group">
-                        <label for="carTypeFilter">Car Type</label>
-                        <select id="carTypeFilter">
-                            <option value="all">All types</option>
-                            <option value="sedan">Sedan</option>
-                            <option value="suv">SUV</option>
-                            <option value="muv">MUV</option>
-                            <option value="hatchback">Hatchback</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="carPriceFilter">Price per day</label>
-                        <select id="carPriceFilter">
-                            <option value="all">Any price</option>
-                            <option value="budget">Under ₹2,000</option>
-                            <option value="standard">₹2,000 - ₹3,000</option>
-                            <option value="premium">Above ₹3,000</option>
-                        </select>
-                    </div>
-
-                    <button class="clear-filters-btn" id="clearFiltersButton" type="button">
-                        Clear filters
-                    </button>
-                </div>
-                <p class="filter-result" id="filterResult" role="status"></p>
-            </div>
         </div>
 
         <div class="car-container">
@@ -2644,7 +2703,6 @@
             : "http://localhost:3000/api";
 
         let pendingCarName = null;
-        let availableCarNames = null;
 
         async function readJsonResponse(response) {
             const contentType = response.headers.get("content-type") || "";
@@ -2656,75 +2714,8 @@
             return response.json();
         }
 
-        // ================= SEARCH CARS =================
-
-        async function searchCars(event) {
-            if (event) {
-                event.preventDefault();
-            }
-
-            let location =
-                document.getElementById("location").value.trim();
-
-            let pickupDate =
-                document.getElementById("pickupDate").value;
-
-            let returnDate =
-                document.getElementById("returnDate").value;
-
-            const status = document.getElementById("searchStatus");
-            const searchButton = document.getElementById("searchButton");
-            status.classList.remove("error");
-
-            if (location === "") {
-                status.textContent = "Please enter your pick-up location.";
-                return;
-            }
-
-            if (pickupDate === "") {
-                status.textContent = "Please select your pick-up date.";
-                return;
-            }
-
-            if (returnDate === "") {
-                status.textContent = "Please select your return date.";
-                return;
-            }
-
-            if (returnDate < pickupDate) {
-                status.textContent = "Return date cannot be before pick-up date.";
-                return;
-            }
-
-            searchButton.disabled = true;
-            searchButton.textContent = "Searching...";
-            status.textContent = "Checking available cars...";
-
-            try {
-                const response = await fetch(
-                    `${API_BASE_URL}/cars?location=${encodeURIComponent(location)}&pickupDate=${pickupDate}&returnDate=${returnDate}`
-                );
-                const result = await readJsonResponse(response);
-
-                if (!response.ok) {
-                    throw new Error(result.error || "Unable to search cars.");
-                }
-
-                availableCarNames = new Set(result.cars.map(car => car.name.toLowerCase()));
-                applyCarFilters();
-
-                document
-                    .getElementById("cars")
-                    .scrollIntoView({ behavior: "smooth" });
-
-                status.textContent = `${result.cars.length} car(s) available near ${result.location} from ${result.pickupDate} to ${result.returnDate}.`;
-            } catch (error) {
-                status.classList.add("error");
-                status.textContent = error.message || "Unable to connect to the backend.";
-            } finally {
-                searchButton.disabled = false;
-                searchButton.textContent = "Search Cars";
-            }
+        function showCars() {
+            document.getElementById("cars").scrollIntoView({ behavior: "smooth" });
         }
 
         function matchesPrice(price, priceFilter) {
@@ -2734,71 +2725,21 @@
             return true;
         }
 
-        function applyCarFilters() {
-            const typeFilter = document.getElementById("carTypeFilter").value;
-            const priceFilter = document.getElementById("carPriceFilter").value;
-            let visibleCount = 0;
+        function applyHeroFilters() {
+            const typeFilter = document.getElementById("heroCarTypeFilter").value;
+            const priceFilter = document.getElementById("heroCarPriceFilter").value;
 
             document.querySelectorAll(".car-card").forEach(card => {
-                const carName = card.querySelector("h3")?.textContent.trim().toLowerCase() || "";
                 const carType = card.querySelector(".car-type")?.textContent.trim().toLowerCase() || "";
                 const priceText = card.querySelector(".price strong")?.textContent || "";
                 const price = Number(priceText.replace(/[^0-9]/g, ""));
-                const matchesAvailability = !availableCarNames || availableCarNames.has(carName);
                 const matchesType = typeFilter === "all" || carType.includes(typeFilter) ||
                     (typeFilter === "muv" && carType.includes("mpv"));
-                const matchesSelectedPrice = matchesPrice(price, priceFilter);
-                card.hidden = !(matchesAvailability && matchesType && matchesSelectedPrice);
-                if (!card.hidden) visibleCount += 1;
+                card.hidden = !(matchesType && matchesPrice(price, priceFilter));
             });
 
-            const result = document.getElementById("filterResult");
-            const hasFilters = typeFilter !== "all" || priceFilter !== "all";
-            result.textContent = hasFilters ? `${visibleCount} car(s) match your filters.` : "";
+            showCars();
         }
-
-        document.getElementById("carTypeFilter").addEventListener("change", applyCarFilters);
-        document.getElementById("carPriceFilter").addEventListener("change", applyCarFilters);
-        document.getElementById("clearFiltersButton").addEventListener("click", function () {
-            document.getElementById("carTypeFilter").value = "all";
-            document.getElementById("carPriceFilter").value = "all";
-            applyCarFilters();
-        });
-
-        const pickupDateInput = document.getElementById("pickupDate");
-        const returnDateInput = document.getElementById("returnDate");
-        const today = new Date().toISOString().split("T")[0];
-        pickupDateInput.min = today;
-        returnDateInput.min = today;
-        document.querySelectorAll(".date-control").forEach(function (control) {
-            const dateInput = control.querySelector("input");
-            const hint = control.querySelector(".date-hover-hint");
-            const minimumDate = new Date(`${dateInput.min}T00:00:00`);
-            const minimumDateText = minimumDate.toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-            });
-            hint.textContent = `Select ${dateInput.id === "returnDate" ? "a return date" : "a pick-up date"} from ${minimumDateText}`;
-            control.addEventListener("click", function (event) {
-                if (event.target === control && typeof dateInput.showPicker === "function") {
-                    dateInput.showPicker();
-                }
-            });
-        });
-        pickupDateInput.addEventListener("change", function () {
-            returnDateInput.min = pickupDateInput.value || today;
-            if (returnDateInput.value && returnDateInput.value < returnDateInput.min) {
-                returnDateInput.value = returnDateInput.min;
-            }
-            const returnHint = returnDateInput.parentElement.querySelector(".date-hover-hint");
-            const returnMinimum = new Date(`${returnDateInput.min}T00:00:00`);
-            returnHint.textContent = `Select a return date from ${returnMinimum.toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "short",
-                day: "numeric"
-            })}`;
-        });
 
         // ================= RENT CAR =================
 
@@ -2822,9 +2763,9 @@
             document.getElementById("bookingCarImage").alt = carName;
             document.getElementById("bookingCarType").textContent = sourceType?.textContent.trim() || "Rental car";
             document.getElementById("bookingCarPrice").textContent = sourcePrice?.textContent.trim() || "Price available";
-            document.getElementById("bookingLocation").value = document.getElementById("location").value.trim();
-            document.getElementById("bookingPickupDate").value = document.getElementById("pickupDate").value;
-            document.getElementById("bookingReturnDate").value = document.getElementById("returnDate").value;
+            document.getElementById("bookingLocation").value = "";
+            document.getElementById("bookingPickupDate").value = "";
+            document.getElementById("bookingReturnDate").value = "";
             const today = new Date().toISOString().split("T")[0];
             document.getElementById("bookingPickupDate").min = today;
             document.getElementById("bookingReturnDate").min = document.getElementById("bookingPickupDate").value || today;
@@ -2885,13 +2826,13 @@
                     throw new Error(result.error || "Unable to create booking.");
                 }
 
-                const savedBookings = JSON.parse(localStorage.getItem("driveEasyBookings") || "[]");
+                const savedBookings = getCurrentUserBookings();
                 const savedBooking = {
                     ...result.booking,
                     image: document.getElementById("bookingCarImage").src
                 };
                 savedBookings.unshift(savedBooking);
-                localStorage.setItem("driveEasyBookings", JSON.stringify(savedBookings));
+                saveCurrentUserBookings(savedBookings);
                 closeBooking();
                 showThankYou(savedBooking);
             } catch (error) {
@@ -3010,6 +2951,26 @@
 
         let cancellationBookingId = null;
 
+        function getUserStorageKey(userEmail) {
+            return `driveEasyBookings_${String(userEmail || "").trim().toLowerCase()}`;
+        }
+
+        function getCurrentUserBookings() {
+            const user = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
+            if (!user?.email) {
+                return [];
+            }
+            return JSON.parse(localStorage.getItem(getUserStorageKey(user.email)) || "[]");
+        }
+
+        function saveCurrentUserBookings(bookings) {
+            const user = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
+            if (!user?.email) {
+                return;
+            }
+            localStorage.setItem(getUserStorageKey(user.email), JSON.stringify(bookings));
+        }
+
         async function syncAccountBookings(userEmail) {
             try {
                 const response = await fetch(`${API_BASE_URL}/bookings?email=${encodeURIComponent(userEmail)}`);
@@ -3017,7 +2978,7 @@
                 if (!response.ok) {
                     throw new Error(result.error || "Unable to load bookings.");
                 }
-                localStorage.setItem("driveEasyBookings", JSON.stringify(result.bookings));
+                localStorage.setItem(getUserStorageKey(userEmail), JSON.stringify(result.bookings));
                 renderAccountBookings();
             } catch (error) {
                 console.error("Unable to sync account bookings:", error.message);
@@ -3025,7 +2986,7 @@
         }
 
         function renderAccountBookings() {
-            const bookings = JSON.parse(localStorage.getItem("driveEasyBookings") || "[]");
+            const bookings = getCurrentUserBookings();
             const bookingCount = document.getElementById("accountBookingCount");
             const bookingList = document.getElementById("accountBookingList");
             bookingCount.textContent = bookings.length;
@@ -3066,8 +3027,7 @@
         }
 
         function openCancellation(bookingId) {
-            const booking = JSON.parse(localStorage.getItem("driveEasyBookings") || "[]")
-                .find(item => item.id === bookingId);
+            const booking = getCurrentUserBookings().find(item => item.id === bookingId);
             if (!booking) {
                 return;
             }
@@ -3092,7 +3052,7 @@
             const reason = document.getElementById("cancelReason").value.trim();
             const error = document.getElementById("cancelError");
             const confirmButton = document.getElementById("cancelConfirm");
-            const savedBookings = JSON.parse(localStorage.getItem("driveEasyBookings") || "[]");
+            const savedBookings = getCurrentUserBookings();
             const selectedBooking = savedBookings.find(
                 booking => String(booking.id) === String(cancellationBookingId)
             );
@@ -3128,7 +3088,7 @@
 
                 const remainingBookings = savedBookings
                     .filter(booking => String(booking.id) !== String(cancellationBookingId));
-                localStorage.setItem("driveEasyBookings", JSON.stringify(remainingBookings));
+                saveCurrentUserBookings(remainingBookings);
                 const cancelledBooking = result.booking || selectedBooking;
                 closeCancellation();
                 renderAccountBookings();
