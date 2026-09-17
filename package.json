@@ -2,6 +2,9 @@
   "name": "driveeasy-car-rental",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22.5.0"
+  },
   "scripts": {
     "start": "node backend/server.js"
   }
