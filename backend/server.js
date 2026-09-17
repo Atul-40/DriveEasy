@@ -44,10 +44,19 @@ database.exec(`
     location TEXT NOT NULL,
     pickup_date TEXT NOT NULL,
     return_date TEXT NOT NULL,
+    pickup_time TEXT NOT NULL DEFAULT '00:00',
+    return_time TEXT NOT NULL DEFAULT '23:59',
     image TEXT,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   )
 `);
+const bookingColumns = database.prepare('PRAGMA table_info(bookings)').all();
+if (!bookingColumns.some(column => column.name === 'pickup_time')) {
+  database.exec("ALTER TABLE bookings ADD COLUMN pickup_time TEXT NOT NULL DEFAULT '00:00'");
+}
+if (!bookingColumns.some(column => column.name === 'return_time')) {
+  database.exec("ALTER TABLE bookings ADD COLUMN return_time TEXT NOT NULL DEFAULT '23:59'");
+}
 
 const savedUserCount = database.prepare('SELECT COUNT(*) AS count FROM users').get().count;
 if (savedUserCount === 0) {
@@ -80,6 +89,15 @@ function sendJson(response, statusCode, data) {
   response.end(JSON.stringify(data));
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
 function readBody(request) {
   return new Promise((resolve, reject) => {
     let body = '';
@@ -95,17 +113,19 @@ function readBody(request) {
   });
 }
 
-function isValidDateRange(pickupDate, returnDate) {
+function isValidDateRange(pickupDate, returnDate, pickupTime = '00:00', returnTime = '23:59') {
   const today = new Date().toISOString().slice(0, 10);
   return pickupDate && returnDate && /^\d{4}-\d{2}-\d{2}$/.test(pickupDate) &&
-    /^\d{4}-\d{2}-\d{2}$/.test(returnDate) && pickupDate >= today && pickupDate <= returnDate;
+    /^\d{4}-\d{2}-\d{2}$/.test(returnDate) && /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(pickupTime) &&
+    /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(returnTime) && pickupDate >= today &&
+    `${pickupDate}T${pickupTime}` < `${returnDate}T${returnTime}`;
 }
 
-function isAvailable(carId, pickupDate, returnDate) {
+function isAvailable(carId, pickupDate, returnDate, pickupTime = '00:00', returnTime = '23:59') {
   const booking = database.prepare(`
     SELECT id FROM bookings
-    WHERE car_id = ? AND pickup_date <= ? AND return_date >= ?
-  `).get(carId, returnDate, pickupDate);
+    WHERE car_id = ? AND pickup_date || 'T' || pickup_time < ? AND return_date || 'T' || return_time > ?
+  `).get(carId, `${returnDate}T${returnTime}`, `${pickupDate}T${pickupTime}`);
   return !booking;
 }
 
@@ -115,7 +135,7 @@ const server = http.createServer(async (request, response) => {
   if (request.method === 'OPTIONS') {
     response.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization'
     });
     response.end();
@@ -139,6 +159,115 @@ const server = http.createServer(async (request, response) => {
 
     const availableCars = cars.filter(car => isAvailable(car.id, pickupDate, returnDate));
     sendJson(response, 200, { location, pickupDate, returnDate, cars: availableCars });
+    return;
+  }
+
+  if (request.method === 'GET' && requestUrl.pathname === '/api/users') {
+    const savedUsers = database.prepare(`
+      SELECT users.id, users.name, users.email, users.created_at AS createdAt,
+        COUNT(bookings.id) AS bookingCount,
+        COALESCE(GROUP_CONCAT(DISTINCT bookings.car_name), 'None') AS bookingCars
+      FROM users
+      LEFT JOIN bookings ON bookings.user_email = users.email
+      GROUP BY users.id
+      ORDER BY users.id DESC
+    `).all();
+    sendJson(response, 200, { users: savedUsers });
+    return;
+  }
+
+  if (request.method === 'PUT' && requestUrl.pathname.startsWith('/api/users/')) {
+    try {
+      const userId = Number(requestUrl.pathname.split('/').pop());
+      const userData = await readBody(request);
+      const name = String(userData.name || '').trim();
+      const email = String(userData.email || '').trim().toLowerCase();
+
+      if (!Number.isInteger(userId) || userId < 1 || !name || !/^\S+@\S+\.\S+$/.test(email)) {
+        sendJson(response, 400, { error: 'A valid name and email address are required.' });
+        return;
+      }
+
+      const currentUser = database.prepare('SELECT email FROM users WHERE id = ?').get(userId);
+      if (!currentUser) {
+        sendJson(response, 404, { error: 'User not found.' });
+        return;
+      }
+
+      const duplicateUser = database.prepare('SELECT id FROM users WHERE email = ? AND id != ?').get(email, userId);
+      if (duplicateUser) {
+        sendJson(response, 409, { error: 'That email address is already in use.' });
+        return;
+      }
+
+      database.prepare('UPDATE users SET name = ?, email = ? WHERE id = ?').run(name, email, userId);
+      database.prepare('UPDATE bookings SET user_email = ? WHERE user_email = ?').run(email, currentUser.email);
+      const updatedUser = database.prepare(`
+        SELECT users.id, users.name, users.email, users.created_at AS createdAt,
+          COUNT(bookings.id) AS bookingCount,
+          COALESCE(GROUP_CONCAT(DISTINCT bookings.car_name), 'None') AS bookingCars
+        FROM users LEFT JOIN bookings ON bookings.user_email = users.email
+        WHERE users.id = ? GROUP BY users.id
+      `).get(userId);
+      sendJson(response, 200, { message: 'User updated successfully.', user: updatedUser });
+    } catch (error) {
+      sendJson(response, 400, { error: error.message });
+    }
+    return;
+  }
+
+  if (request.method === 'DELETE' && requestUrl.pathname.startsWith('/api/users/')) {
+    try {
+      const userId = Number(requestUrl.pathname.split('/').pop());
+      const user = database.prepare('SELECT email FROM users WHERE id = ?').get(userId);
+      if (!Number.isInteger(userId) || !user) {
+        sendJson(response, 404, { error: 'User not found.' });
+        return;
+      }
+
+      database.prepare('DELETE FROM bookings WHERE user_email = ?').run(user.email);
+      database.prepare('DELETE FROM users WHERE id = ?').run(userId);
+      sendJson(response, 200, { message: 'User deleted successfully.' });
+    } catch (error) {
+      sendJson(response, 400, { error: error.message });
+    }
+    return;
+  }
+
+  if (request.method === 'GET' && requestUrl.pathname === '/users') {
+    const savedUsers = database.prepare(`
+      SELECT users.id, users.name, users.email, users.created_at AS createdAt,
+        COUNT(bookings.id) AS bookingCount,
+        COALESCE(GROUP_CONCAT(DISTINCT bookings.car_name), 'None') AS bookingCars
+      FROM users
+      LEFT JOIN bookings ON bookings.user_email = users.email
+      GROUP BY users.id
+      ORDER BY users.id DESC
+    `).all();
+    const rows = savedUsers.map(user => `
+      <tr data-user-id="${escapeHtml(user.id)}">
+        <td>${escapeHtml(user.id)}</td>
+        <td>${escapeHtml(user.name)}</td>
+        <td>${escapeHtml(user.email)}</td>
+        <td>${escapeHtml(user.createdAt)}</td>
+        <td>${escapeHtml(user.bookingCount)}</td>
+        <td>${escapeHtml(user.bookingCars)}</td>
+        <td><button type="button" class="edit-button" onclick="editUser(${escapeHtml(user.id)})">Edit</button> <button type="button" class="delete-button" onclick="deleteUser(${escapeHtml(user.id)})">Delete</button></td>
+      </tr>`).join('');
+    response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    response.end(`<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DriveEasy Users</title><style>
+body{margin:0;padding:40px;background:#f4f6f8;color:#17202a;font-family:Arial,sans-serif}
+main{max-width:1100px;margin:auto;background:#fff;padding:32px;border:1px solid #d9dee3;border-radius:8px;box-shadow:0 4px 14px #00000012}
+h1{margin:0 0 8px;font-size:28px}p{margin:0 0 24px;color:#5c6670}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left}th,td{padding:14px 16px;border-bottom:1px solid #e1e5e8}th{background:#263746;color:#fff;font-size:13px;text-transform:uppercase;letter-spacing:.04em}tbody tr:nth-child(even){background:#f7f9fa}tbody tr:hover{background:#eef3f6}.edit-button,.delete-button{padding:7px 12px;border-radius:4px;cursor:pointer}.edit-button{border:1px solid #263746;background:#fff;color:#263746}.edit-button:hover{background:#eef3f6}.delete-button{border:1px solid #b42318;background:#fff;color:#b42318}.delete-button:hover{background:#fff1f0}.edit-form{display:none;margin:24px 0;padding:20px;background:#f7f9fa;border:1px solid #d9dee3;border-radius:6px}.edit-form.open{display:grid;gap:10px;grid-template-columns:1fr 1fr auto auto;align-items:end}.edit-form label{display:grid;gap:6px;font-size:13px;font-weight:bold}.edit-form input{padding:9px;border:1px solid #c8d0d6;border-radius:4px;font:inherit}.save-button{padding:10px 16px;border:0;border-radius:4px;background:#263746;color:#fff;cursor:pointer}.cancel-button{padding:9px 16px;border:1px solid #c8d0d6;border-radius:4px;background:#fff;cursor:pointer}.status{min-height:20px;margin:8px 0;color:#b42318}
+</style></head><body><main><h1>DriveEasy User Register</h1><p>Registered users and their current booking totals.</p><form class="edit-form" id="editForm" onsubmit="saveUser(event)"><label>Full Name<input id="editName" required></label><label>Email Address<input id="editEmail" type="email" required></label><button class="save-button" type="submit">Save changes</button><button class="cancel-button" type="button" onclick="closeEditor()">Cancel</button><input id="editId" type="hidden"></form><div id="status" class="status" role="alert"></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Full Name</th><th>Email Address</th><th>Created</th><th>Bookings</th><th>Booking Cars</th><th>Action</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No users found.</td></tr>'}</tbody></table></div><script>
+function editUser(id){const row=document.querySelector('tr[data-user-id="'+id+'"]');document.getElementById('editId').value=id;document.getElementById('editName').value=row.cells[1].textContent;document.getElementById('editEmail').value=row.cells[2].textContent;document.getElementById('editForm').classList.add('open');document.getElementById('status').textContent='';window.scrollTo({top:0,behavior:'smooth'});}
+function closeEditor(){document.getElementById('editForm').classList.remove('open');}
+async function saveUser(event){event.preventDefault();const id=document.getElementById('editId').value;const status=document.getElementById('status');try{const response=await fetch('/api/users/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.getElementById('editName').value,email:document.getElementById('editEmail').value})});const result=await response.json();if(!response.ok)throw new Error(result.error||'Unable to update user.');status.style.color='#16794c';status.textContent='User updated successfully. Refreshing...';window.setTimeout(()=>window.location.reload(),500);}catch(error){status.style.color='#b42318';status.textContent=error.message;}}
+async function deleteUser(id){const row=document.querySelector('tr[data-user-id="'+id+'"]');const name=row.cells[1].textContent;if(!window.confirm('Delete '+name+' and all of this user\\'s bookings?'))return;const status=document.getElementById('status');try{const response=await fetch('/api/users/'+id,{method:'DELETE'});const result=await response.json();if(!response.ok)throw new Error(result.error||'Unable to delete user.');status.style.color='#16794c';status.textContent='User deleted successfully. Refreshing...';window.setTimeout(()=>window.location.reload(),500);}catch(error){status.style.color='#b42318';status.textContent=error.message;}}
+</script></main></body></html>`);
     return;
   }
 
@@ -190,9 +319,11 @@ const server = http.createServer(async (request, response) => {
       const booking = await readBody(request);
       const car = cars.find(item => item.name.toLowerCase() === String(booking.carName || '').toLowerCase());
       const userEmail = String(booking.userEmail || '').trim().toLowerCase();
+      const pickupTime = String(booking.pickupTime || '');
+      const returnTime = String(booking.returnTime || '');
 
-      if (!car || !isValidDateRange(booking.pickupDate, booking.returnDate) || !userEmail) {
-        sendJson(response, 400, { error: 'A signed-in user, valid car name, pickup date, and return date are required.' });
+      if (!car || !isValidDateRange(booking.pickupDate, booking.returnDate, pickupTime, returnTime) || !userEmail) {
+        sendJson(response, 400, { error: 'A signed-in user, valid car name, dates, and start/end times are required.' });
         return;
       }
 
@@ -201,15 +332,15 @@ const server = http.createServer(async (request, response) => {
         return;
       }
 
-      if (!isAvailable(car.id, booking.pickupDate, booking.returnDate)) {
-        sendJson(response, 409, { error: 'That car is already booked for the selected dates.' });
+      if (!isAvailable(car.id, booking.pickupDate, booking.returnDate, pickupTime, returnTime)) {
+        sendJson(response, 409, { error: 'That car is already booked for the selected time range.' });
         return;
       }
 
       const savedBooking = database.prepare(`
         INSERT INTO bookings
-          (user_email, car_id, car_name, location, pickup_date, return_date, image)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+          (user_email, car_id, car_name, location, pickup_date, return_date, pickup_time, return_time, image)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).run(
         userEmail,
         car.id,
@@ -217,11 +348,14 @@ const server = http.createServer(async (request, response) => {
         booking.location || 'Not specified',
         booking.pickupDate,
         booking.returnDate,
+        pickupTime,
+        returnTime,
         booking.image || ''
       );
       const bookingRecord = database.prepare(`
         SELECT id, car_id AS carId, car_name AS carName, location,
-          pickup_date AS pickupDate, return_date AS returnDate, image, created_at AS createdAt
+          pickup_date AS pickupDate, return_date AS returnDate,
+          pickup_time AS pickupTime, return_time AS returnTime, image, created_at AS createdAt
         FROM bookings WHERE id = ?
       `).get(Number(savedBooking.lastInsertRowid));
       sendJson(response, 201, { message: 'Booking created successfully.', booking: bookingRecord });
@@ -239,7 +373,8 @@ const server = http.createServer(async (request, response) => {
     }
     const userBookings = database.prepare(`
       SELECT id, car_id AS carId, car_name AS carName, location,
-        pickup_date AS pickupDate, return_date AS returnDate, image, created_at AS createdAt
+        pickup_date AS pickupDate, return_date AS returnDate,
+        pickup_time AS pickupTime, return_time AS returnTime, image, created_at AS createdAt
       FROM bookings WHERE user_email = ? ORDER BY id DESC
     `).all(userEmail);
     sendJson(response, 200, { bookings: userBookings });
@@ -253,7 +388,8 @@ const server = http.createServer(async (request, response) => {
       const userEmail = String(cancellation.userEmail || '').trim().toLowerCase();
       const cancelledBooking = database.prepare(`
         SELECT id, car_id AS carId, car_name AS carName, location,
-          pickup_date AS pickupDate, return_date AS returnDate, image, created_at AS createdAt
+          pickup_date AS pickupDate, return_date AS returnDate,
+          pickup_time AS pickupTime, return_time AS returnTime, image, created_at AS createdAt
         FROM bookings WHERE id = ? AND user_email = ?
       `).get(bookingId, userEmail);
 

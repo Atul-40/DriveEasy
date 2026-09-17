@@ -1807,8 +1807,14 @@
                     <label for="bookingPickupDate">Pick-up date
                         <input id="bookingPickupDate" type="date" required>
                     </label>
+                    <label for="bookingPickupTime">Start time
+                        <input id="bookingPickupTime" type="time" required>
+                    </label>
                     <label for="bookingReturnDate">Return date
                         <input id="bookingReturnDate" type="date" required>
+                    </label>
+                    <label for="bookingReturnTime">End time
+                        <input id="bookingReturnTime" type="time" required>
                     </label>
                     <p class="booking-error" id="bookingError" role="alert"></p>
                     <div class="booking-form-actions">
@@ -2341,7 +2347,7 @@
 
     <div class="car-image">
         <img
-            src="https://assets.popularmaruti.com/How_the_Maruti_Suzuki_Swift_Adapts_the_Lifestyle_of_Indian_Automobile_Enthusiasts_ce22931c47/How_the_Maruti_Suzuki_Swift_Adapts_the_Lifestyle_of_Indian_Automobile_Enthusiasts_ce22931c47.jpg"
+            src="https://cdn-s3.autocarindia.com/legacy/cdni/mmv_images/colors/20251016103232_Maruti_Suzuki_Swift_Bluish_Black.jpg"
             alt="Maruti Suzuki Swift"
         >
     </div>
@@ -2700,7 +2706,7 @@
 
         const API_BASE_URL = window.location.port === "3000"
             ? "/api"
-            : "http://localhost:3000/api";
+            : `${window.location.protocol}//${window.location.hostname}:3000/api`;
 
         let pendingCarName = null;
 
@@ -2765,7 +2771,9 @@
             document.getElementById("bookingCarPrice").textContent = sourcePrice?.textContent.trim() || "Price available";
             document.getElementById("bookingLocation").value = "";
             document.getElementById("bookingPickupDate").value = "";
+            document.getElementById("bookingPickupTime").value = "09:00";
             document.getElementById("bookingReturnDate").value = "";
+            document.getElementById("bookingReturnTime").value = "18:00";
             const today = new Date().toISOString().split("T")[0];
             document.getElementById("bookingPickupDate").min = today;
             document.getElementById("bookingReturnDate").min = document.getElementById("bookingPickupDate").value || today;
@@ -2788,26 +2796,33 @@
             const carName = document.getElementById("bookingCarName").textContent;
             const location = document.getElementById("bookingLocation").value.trim();
             const pickupDate = document.getElementById("bookingPickupDate").value;
+            const pickupTime = document.getElementById("bookingPickupTime").value;
             const returnDate = document.getElementById("bookingReturnDate").value;
+            const returnTime = document.getElementById("bookingReturnTime").value;
             const today = new Date().toISOString().split("T")[0];
             const error = document.getElementById("bookingError");
             const submitButton = document.getElementById("bookingSubmit");
+            const signedInUser = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
             error.textContent = "";
 
-            if (!location || !pickupDate || !returnDate) {
-                error.textContent = "Location, pick-up date, and return date are required.";
+            if (!location || !pickupDate || !pickupTime || !returnDate || !returnTime) {
+                error.textContent = "Location, dates, and start/end times are required.";
                 return;
             }
 
-            if (pickupDate < today || returnDate < pickupDate) {
-                error.textContent = "Choose today or a future date, with return after pick-up.";
+            if (!signedInUser?.email) {
+                error.textContent = "Please log in before confirming your booking.";
+                return;
+            }
+
+            if (pickupDate < today || `${pickupDate}T${pickupTime}` >= `${returnDate}T${returnTime}`) {
+                error.textContent = "Choose a future range with the end after the start.";
                 return;
             }
 
             submitButton.disabled = true;
             submitButton.textContent = "Confirming...";
             try {
-                const signedInUser = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
                 const response = await fetch(`${API_BASE_URL}/bookings`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -2815,7 +2830,9 @@
                         carName,
                         location,
                         pickupDate,
+                        pickupTime,
                         returnDate,
+                        returnTime,
                         userEmail: signedInUser?.email,
                         image: document.getElementById("bookingCarImage").src
                     })
@@ -2847,7 +2864,7 @@
             document.getElementById("thankyouCarImage").src = booking.image || "";
             document.getElementById("thankyouCarImage").alt = booking.carName;
             document.getElementById("thankyouCar").textContent = booking.carName;
-            document.getElementById("thankyouDates").textContent = `${booking.pickupDate} to ${booking.returnDate}`;
+            document.getElementById("thankyouDates").textContent = `${booking.pickupDate} ${booking.pickupTime} to ${booking.returnDate} ${booking.returnTime}`;
             document.getElementById("thankyouLocation").textContent = `Pick-up: ${booking.location}`;
             document.getElementById("thankyouPage").classList.add("open");
             document.body.classList.add("thankyou-view");
@@ -2980,8 +2997,10 @@
                 }
                 localStorage.setItem(getUserStorageKey(userEmail), JSON.stringify(result.bookings));
                 renderAccountBookings();
+                return true;
             } catch (error) {
                 console.error("Unable to sync account bookings:", error.message);
+                return false;
             }
         }
 
@@ -3018,7 +3037,7 @@
                 cancelButton.textContent = "Cancel booking";
                 cancelButton.addEventListener("click", () => openCancellation(booking.id));
                 car.textContent = booking.carName;
-                details.textContent = `${booking.pickupDate} to ${booking.returnDate} | Pick-up: ${booking.location}`;
+                details.textContent = `${booking.pickupDate} ${booking.pickupTime} to ${booking.returnDate} ${booking.returnTime} | Pick-up: ${booking.location}`;
                 actions.appendChild(cancelButton);
                 content.append(car, details, actions);
                 record.append(image, content);
@@ -3026,15 +3045,31 @@
             });
         }
 
-        function openCancellation(bookingId) {
-            const booking = getCurrentUserBookings().find(item => item.id === bookingId);
+        async function openCancellation(bookingId) {
+            let booking = getCurrentUserBookings().find(item => String(item.id) === String(bookingId));
+            const user = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
+
+            if (user?.email) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/bookings?email=${encodeURIComponent(user.email)}`);
+                    const result = await readJsonResponse(response);
+                    if (response.ok) {
+                        saveCurrentUserBookings(result.bookings);
+                        renderAccountBookings();
+                        booking = result.bookings.find(item => String(item.id) === String(bookingId));
+                    }
+                } catch (error) {
+                    console.error("Unable to refresh booking before cancellation:", error.message);
+                }
+            }
+
             if (!booking) {
                 return;
             }
 
             cancellationBookingId = booking.id;
             document.getElementById("cancelBookingSummary").textContent =
-                `Cancel ${booking.carName} booked from ${booking.pickupDate} to ${booking.returnDate}? This action cannot be undone.`;
+                `Cancel ${booking.carName} booked from ${booking.pickupDate} ${booking.pickupTime} to ${booking.returnDate} ${booking.returnTime}? This action cannot be undone.`;
             document.getElementById("cancelReason").value = "";
             document.getElementById("cancelError").textContent = "";
             document.getElementById("cancelModal").classList.add("open");
@@ -3082,7 +3117,7 @@
                     })
                 });
                 const result = await readJsonResponse(response);
-                if (!response.ok && response.status !== 404) {
+                if (!response.ok) {
                     throw new Error(result.error || "Unable to cancel booking.");
                 }
 
@@ -3105,7 +3140,7 @@
 
         function showCancellationSuccess(booking, reason) {
             document.getElementById("cancelledCar").textContent = booking.carName;
-            document.getElementById("cancelledDates").textContent = `${booking.pickupDate} to ${booking.returnDate}`;
+            document.getElementById("cancelledDates").textContent = `${booking.pickupDate} ${booking.pickupTime} to ${booking.returnDate} ${booking.returnTime}`;
             document.getElementById("cancelledReason").textContent = `Reason: ${reason}`;
             document.getElementById("cancellationPage").classList.add("open");
             document.body.classList.add("cancellation-view");
@@ -3127,7 +3162,7 @@
             }
         }
 
-        function showAccount(user, isSignup) {
+        async function showAccount(user, isSignup) {
             document.getElementById("accountTitle").textContent = isSignup ? "Account created" : "Login successful";
             document.getElementById("accountMessage").textContent = isSignup
                 ? `Welcome to DriveEasy, ${user.name}. Your account is ready.`
@@ -3135,7 +3170,7 @@
             document.getElementById("accountName").textContent = user.name;
             document.getElementById("accountEmail").textContent = user.email;
             renderAccountBookings();
-            syncAccountBookings(user.email);
+            await syncAccountBookings(user.email);
             document.getElementById("accountModal").classList.add("open");
             document.body.classList.add("account-view");
             document.querySelector(".login-btn").style.display = "none";
@@ -3177,8 +3212,7 @@
 
         const savedUser = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
         if (savedUser) {
-            showAccount(savedUser, false);
-            closeAccount();
+            showAccount(savedUser, false).then(() => closeAccount());
         }
 
 
