@@ -2704,9 +2704,7 @@
 
     <script>
 
-        const API_BASE_URL = window.location.port === "3000"
-            ? "/api"
-            : `${window.location.protocol}//${window.location.hostname}:3000/api`;
+        const API_BASE_URL = "/api";
 
         let pendingCarName = null;
 
