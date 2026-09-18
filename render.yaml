@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: driveeasy
+    name: driveeasy-car-rental
     runtime: node
     plan: free
     buildCommand: npm install
