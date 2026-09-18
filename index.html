@@ -6,7 +6,6 @@
 
     <title>DriveEasy - Car Rental</title>
 
-    <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -14,1628 +13,7 @@
         rel="stylesheet"
     >
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: #f5f7fb;
-            color: #222;
-        }
-
-        /* ================= NAVBAR ================= */
-
-        header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar {
-            max-width: 1200px;
-            margin: auto;
-            padding: 18px 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 25px;
-            font-weight: 700;
-            color: #ff4d30;
-            letter-spacing: -0.03em;
-        }
-
-        .logo-mark {
-            width: 46px;
-            height: 28px;
-            display: inline-block;
-            flex-shrink: 0;
-            filter: drop-shadow(0 4px 8px rgba(255, 77, 48, 0.18));
-        }
-
-        .logo-mark svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 30px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #ff4d30;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .login-btn,
-        .signup-btn {
-            padding: 9px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .login-btn {
-            background: transparent;
-            border: 1px solid #ff4d30;
-            color: #ff4d30;
-        }
-
-        .signup-btn {
-            background: #ff4d30;
-            border: 1px solid #ff4d30;
-            color: white;
-        }
-
-        .account-btn {
-            display: none;
-            padding: 9px 18px;
-            border: 1px solid #ff4d30;
-            border-radius: 6px;
-            background: white;
-            color: #ff4d30;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .menu-btn {
-            display: none;
-            font-size: 25px;
-            cursor: pointer;
-        }
-
-        .auth-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.68);
-        }
-
-        .auth-modal.open {
-            display: flex;
-        }
-
-        .auth-card {
-            position: relative;
-            display: grid;
-            grid-template-columns: 0.9fr 1.1fr;
-            width: min(820px, 100%);
-            overflow: hidden;
-            border-radius: 16px;
-            background: white;
-            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
-        }
-
-        .auth-visual {
-            min-height: 500px;
-            padding: 38px;
-            display: flex;
-            align-items: flex-end;
-            color: white;
-            background: linear-gradient(rgba(17, 24, 39, 0.1), rgba(17, 24, 39, 0.8)),
-                url("https://cdn-s3.autocarindia.com/legacy/cdni/ExtraImages/20230619111827_verna_virtus_slavia_comparo_1.jpg") center / cover;
-        }
-
-        .auth-visual h2 {
-            font-size: 30px;
-            line-height: 1.2;
-            margin-bottom: 10px;
-        }
-
-        .auth-visual p {
-            color: rgba(255, 255, 255, 0.82);
-            line-height: 1.6;
-        }
-
-        .auth-content {
-            position: relative;
-            padding: 44px 42px;
-        }
-
-        .auth-close {
-            position: absolute;
-            top: 16px;
-            right: 20px;
-            border: 0;
-            background: transparent;
-            color: #777;
-            font-size: 27px;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .auth-content h2 {
-            margin-bottom: 8px;
-            color: #222;
-            font-size: 28px;
-        }
-
-        .auth-subtitle {
-            margin-bottom: 24px;
-            color: #777;
-            font-size: 14px;
-        }
-
-        .auth-switch {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            padding: 4px;
-            margin-bottom: 23px;
-            border-radius: 7px;
-            background: #f1f3f7;
-        }
-
-        .auth-switch button {
-            padding: 10px;
-            border: 0;
-            border-radius: 5px;
-            background: transparent;
-            color: #777;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .auth-switch button.active {
-            background: white;
-            color: #ff4d30;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
-
-        .auth-form label {
-            display: block;
-            margin: 13px 0 6px;
-            color: #333;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .auth-form input {
-            width: 100%;
-            padding: 12px 13px;
-            border: 1px solid #dfe3e8;
-            border-radius: 6px;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .auth-form input:focus {
-            border-color: #ff4d30;
-            box-shadow: 0 0 0 3px rgba(255, 77, 48, 0.1);
-        }
-
-        .auth-submit {
-            width: 100%;
-            padding: 13px;
-            margin-top: 24px;
-            border: 0;
-            border-radius: 6px;
-            background: #ff4d30;
-            color: white;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        .auth-submit:hover {
-            background: #d9361e;
-        }
-
-        .auth-note {
-            margin-top: 14px;
-            color: #888;
-            font-size: 12px;
-            text-align: center;
-        }
-
-        .account-modal {
-            display: none;
-            min-height: calc(100vh - 78px);
-            padding: 64px 7%;
-            background: #f5f7fb;
-        }
-
-        .account-modal.open {
-            display: block;
-        }
-
-        .account-card {
-            position: relative;
-            width: min(1040px, 100%);
-            margin: auto;
-            padding: 42px;
-            border-radius: 16px;
-            background: white;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
-        }
-
-        .account-success {
-            display: inline-flex;
-            width: 48px;
-            height: 48px;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 18px;
-            border-radius: 50%;
-            background: #e9f8ef;
-            color: #16803c;
-            font-size: 26px;
-            font-weight: 700;
-        }
-
-        .account-card h2 {
-            margin-bottom: 8px;
-            color: #222;
-            font-size: 30px;
-        }
-
-        .account-card > p {
-            margin-bottom: 26px;
-            color: #777;
-        }
-
-        .account-overview {
-            display: grid;
-            grid-template-columns: 1.4fr 0.6fr 0.6fr;
-            gap: 16px;
-            margin-bottom: 26px;
-        }
-
-        .account-stat {
-            padding: 18px;
-            border: 1px solid #edf0f3;
-            border-radius: 10px;
-            background: #fff;
-        }
-
-        .account-stat span {
-            display: block;
-            margin-bottom: 8px;
-            color: #888;
-            font-size: 12px;
-        }
-
-        .account-stat strong {
-            color: #222;
-            font-size: 22px;
-        }
-
-        .account-stat:first-child strong {
-            font-size: 16px;
-        }
-
-        .account-bookings {
-            margin-bottom: 26px;
-            padding: 22px;
-            border-radius: 10px;
-            background: #f7f8fa;
-        }
-
-        .account-bookings h3 {
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        .account-bookings p {
-            color: #777;
-            font-size: 14px;
-        }
-
-        .booking-record {
-            display: grid;
-            grid-template-columns: 86px 1fr;
-            gap: 14px;
-            padding: 14px 0;
-            border-top: 1px solid #e5e7eb;
-        }
-
-        .booking-record img {
-            width: 86px;
-            height: 62px;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-
-        .booking-record strong {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        .booking-record span {
-            color: #777;
-            font-size: 13px;
-        }
-
-        .booking-record-actions {
-            margin-top: 12px;
-        }
-
-        .cancel-booking-btn {
-            padding: 7px 11px;
-            border: 1px solid #e5a39a;
-            border-radius: 5px;
-            background: white;
-            color: #b83220;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .cancel-booking-btn:hover {
-            background: #fff2ef;
-        }
-
-        .account-details {
-            display: grid;
-            gap: 14px;
-            margin-bottom: 26px;
-            padding: 20px;
-            border-radius: 10px;
-            background: #f7f8fa;
-        }
-
-        .account-details span {
-            display: block;
-            margin-bottom: 3px;
-            color: #888;
-            font-size: 12px;
-        }
-
-        .account-details strong {
-            color: #333;
-            font-size: 15px;
-        }
-
-        .account-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .account-actions button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .account-home {
-            border: 0;
-            background: #ff4d30;
-            color: white;
-        }
-
-        .logout-btn {
-            border: 1px solid #ddd;
-            background: white;
-            color: #555;
-        }
-
-        .auth-error {
-            min-height: 20px;
-            margin-top: 12px;
-            color: #c0392b;
-            font-size: 13px;
-            text-align: center;
-        }
-
-        .cancel-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            overflow-y: auto;
-            background: #f5f7fb;
-        }
-
-        .cancel-modal.open {
-            display: flex;
-        }
-
-        body.cancellation-form-view > section:not(.cancel-modal),
-        body.cancellation-form-view > footer,
-        body.cancellation-form-view > header {
-            display: none;
-        }
-
-        .cancel-card {
-            width: min(620px, 100%);
-            padding: 46px;
-            border-radius: 16px;
-            background: white;
-            text-align: center;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.1);
-        }
-
-        .cancel-card h2 {
-            margin-bottom: 12px;
-            font-size: 32px;
-        }
-
-        .cancel-card > p {
-            margin-bottom: 20px;
-            color: #777;
-            font-size: 14px;
-        }
-
-        .cancel-card label {
-            text-align: left;
-        }
-
-        .cancel-card label {
-            display: grid;
-            gap: 7px;
-            color: #333;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .cancel-card textarea {
-            width: 100%;
-            min-height: 90px;
-            padding: 11px;
-            border: 1px solid #dfe3e8;
-            border-radius: 6px;
-            outline: none;
-            resize: vertical;
-            font: inherit;
-        }
-
-        .cancel-card textarea:focus {
-            border-color: #ff4d30;
-            box-shadow: 0 0 0 3px rgba(255, 77, 48, 0.1);
-        }
-
-        .cancel-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .cancel-actions button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .cancel-confirm {
-            border: 0;
-            background: #c0392b;
-            color: white;
-        }
-
-        .cancel-close {
-            border: 1px solid #ddd;
-            background: white;
-            color: #555;
-        }
-
-        body.account-view > section,
-        body.account-view > footer {
-            display: none;
-        }
-
-        .booking-page {
-            display: none;
-            min-height: calc(100vh - 78px);
-            padding: 58px 7%;
-            background: #f5f7fb;
-        }
-
-        .booking-page.open {
-            display: block;
-        }
-
-        body.booking-view > section:not(.booking-page),
-        body.booking-view > footer {
-            display: none;
-        }
-
-        .thankyou-page {
-            display: none;
-            min-height: calc(100vh - 78px);
-            align-items: center;
-            justify-content: center;
-            padding: 58px 7%;
-            background: #f5f7fb;
-        }
-
-        .thankyou-page.open {
-            display: flex;
-        }
-
-        body.thankyou-view > section:not(.thankyou-page),
-        body.thankyou-view > footer {
-            display: none;
-        }
-
-        .thankyou-card {
-            width: min(620px, 100%);
-            padding: 46px;
-            border-radius: 16px;
-            background: white;
-            text-align: center;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
-        }
-
-        .thankyou-icon {
-            display: inline-flex;
-            width: 68px;
-            height: 68px;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            border-radius: 50%;
-            background: #e9f8ef;
-            color: #16803c;
-            font-size: 36px;
-            font-weight: 700;
-        }
-
-        .thankyou-car-image {
-            width: min(360px, 100%);
-            height: 190px;
-            margin-bottom: 22px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .thankyou-card h2 {
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
-
-        .thankyou-card > p {
-            margin-bottom: 24px;
-            color: #777;
-        }
-
-        .thankyou-details {
-            display: grid;
-            gap: 8px;
-            margin-bottom: 28px;
-            padding: 18px;
-            border-radius: 10px;
-            background: #f7f8fa;
-            color: #555;
-            font-size: 14px;
-        }
-
-        .thankyou-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .thankyou-actions button {
-            flex: 1;
-            padding: 13px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .thankyou-account {
-            border: 0;
-            background: #ff4d30;
-            color: white;
-        }
-
-        .thankyou-home {
-            border: 1px solid #ddd;
-            background: white;
-            color: #555;
-        }
-
-        .cancellation-page {
-            display: none;
-            min-height: calc(100vh - 78px);
-            align-items: center;
-            justify-content: center;
-            padding: 58px 7%;
-            background: #f5f7fb;
-        }
-
-        .cancellation-page.open {
-            display: flex;
-        }
-
-        body.cancellation-view > section:not(.cancellation-page),
-        body.cancellation-view > footer {
-            display: none;
-        }
-
-        .cancellation-card {
-            width: min(620px, 100%);
-            padding: 46px;
-            border-radius: 16px;
-            background: white;
-            text-align: center;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
-        }
-
-        .cancellation-icon {
-            display: inline-flex;
-            width: 68px;
-            height: 68px;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            border-radius: 50%;
-            background: #fff2ef;
-            color: #c0392b;
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        .cancellation-card h2 {
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
-
-        .cancellation-card > p {
-            margin-bottom: 24px;
-            color: #777;
-        }
-
-        .cancellation-details {
-            display: grid;
-            gap: 8px;
-            margin-bottom: 28px;
-            padding: 18px;
-            border-radius: 10px;
-            background: #f7f8fa;
-            color: #555;
-            font-size: 14px;
-        }
-
-        .cancellation-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .cancellation-actions button {
-            flex: 1;
-            padding: 13px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .cancellation-account {
-            border: 0;
-            background: #ff4d30;
-            color: white;
-        }
-
-        .cancellation-home {
-            border: 1px solid #ddd;
-            background: white;
-            color: #555;
-        }
-
-        .booking-layout {
-            display: grid;
-            grid-template-columns: 0.9fr 1.1fr;
-            gap: 28px;
-            width: min(1080px, 100%);
-            margin: auto;
-        }
-
-        .booking-summary,
-        .booking-form-card {
-            padding: 32px;
-            border-radius: 16px;
-            background: white;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
-        }
-
-        .booking-summary img {
-            width: 100%;
-            height: 230px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .booking-summary h2 {
-            margin: 20px 0 7px;
-            font-size: 29px;
-        }
-
-        .booking-summary p {
-            color: #777;
-        }
-
-        .booking-summary .price {
-            margin-top: 20px;
-            margin-bottom: 0;
-        }
-
-        .booking-form-card h2 {
-            margin-bottom: 8px;
-        }
-
-        .booking-form-card > p {
-            margin-bottom: 24px;
-            color: #777;
-        }
-
-        .booking-form {
-            display: grid;
-            gap: 16px;
-        }
-
-        .booking-form label {
-            display: grid;
-            gap: 7px;
-            color: #333;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .booking-form input {
-            width: 100%;
-            height: 46px;
-            padding: 0 13px;
-            border: 1px solid #dfe3e8;
-            border-radius: 6px;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .booking-form input:focus {
-            border-color: #ff4d30;
-            box-shadow: 0 0 0 3px rgba(255, 77, 48, 0.1);
-        }
-
-        .booking-form-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 8px;
-        }
-
-        .booking-form-actions button {
-            flex: 1;
-            padding: 13px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .booking-submit {
-            border: 0;
-            background: #ff4d30;
-            color: white;
-        }
-
-        .booking-cancel {
-            border: 1px solid #ddd;
-            background: white;
-            color: #555;
-        }
-
-        .booking-error {
-            min-height: 20px;
-            color: #c0392b;
-            font-size: 13px;
-        }
-
-        /* ================= HERO ================= */
-
-       .hero {
-    min-height: 550px;
-    background:
-        linear-gradient(
-            rgba(0, 0, 0, 0.35),
-            rgba(0, 0, 0, 0.35)
-        ),
-        url("https://cdn-s3.autocarindia.com/legacy/cdni/ExtraImages/20230619111827_verna_virtus_slavia_comparo_1.jpg");
-
-    background-size: cover;
-    background-position: center;
-}
-
-        .hero-content {
-            width: 1200px;
-            max-width: 90%;
-            margin: auto;
-            color: rgb(220, 225, 226);
-        }
-
-        .small-heading {
-            color: #573fb7;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .hero h1 {
-            font-size: 55px;
-            line-height: 1.2;
-            margin-bottom: 20px;
-        }
-
-        .hero h1 span {
-            color: #ff5a3c;
-        }
-
-        .hero-text {
-            max-width: 550px;
-            font-size: 17px;
-            line-height: 1.7;
-            margin-bottom: 35px;
-        }
-
-        /* ================= SEARCH BOX ================= */
-
-        .search-box {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            display: flex;
-            gap: 15px;
-            align-items: end;
-            max-width: 950px;
-        }
-
-        .input-group {
-            flex: 1;
-        }
-
-        .input-group label {
-            display: block;
-            color: #333;
-            font-size: 14px;
-            margin-bottom: 7px;
-            font-weight: 500;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            outline: none;
-        }
-
-        .input-group input:focus {
-            border-color: #ff4d30;
-        }
-
-        .date-control {
-            position: relative;
-            display: block;
-        }
-
-        .date-hover-hint {
-            position: absolute;
-            left: 12px;
-            bottom: -32px;
-            z-index: 4;
-            padding: 6px 9px;
-            border-radius: 5px;
-            background: #222;
-            color: white;
-            font-size: 11px;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-4px);
-            transition: opacity 0.2s ease, transform 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .date-control:hover .date-hover-hint,
-        .date-control:focus-within .date-hover-hint {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .date-control input {
-            min-width: 0;
-            height: 46px;
-            accent-color: #ff4d30;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .date-control input::-webkit-calendar-picker-indicator {
-            padding: 4px;
-            cursor: pointer;
-        }
-
-        .search-btn {
-            padding: 12px 22px;
-            background: #ff4d30;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .search-btn:hover {
-            background: #d9361e;
-        }
-
-        .search-btn:disabled {
-            cursor: wait;
-            opacity: 0.7;
-        }
-
-        .hero-filters {
-            display: flex;
-            align-items: end;
-            gap: 10px;
-            width: min(760px, 100%);
-            margin: 210px auto 0;
-            padding: 12px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.96);
-        }
-
-        .hero-filter-group {
-            flex: 1;
-        }
-
-        .hero-filter-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .hero-filter-group select {
-            width: 100%;
-            height: 36px;
-            padding: 0 8px;
-            border: 1px solid #dfe3e8;
-            border-radius: 5px;
-            background: white;
-            color: #333;
-            font: inherit;
-            outline: none;
-        }
-
-        .hero-filter-group select:focus {
-            border-color: #ff4d30;
-        }
-
-        .hero-filter-btn {
-            height: 36px;
-            padding: 0 13px;
-            border: 0;
-            border-radius: 5px;
-            background: #ff4d30;
-            color: white;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .hero-filter-btn:hover {
-            background: #d9361e;
-        }
-
-        .search-status {
-            min-height: 22px;
-            margin-top: 12px;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .search-status.error {
-            color: #ffd2c9;
-        }
-
-        /* ================= SECTIONS ================= */
-
-        .cars-section {
-            padding: 80px 7%;
-        }
-
-        .section-heading {
-            text-align: center;
-            margin-bottom: 45px;
-        }
-
-        .section-heading p {
-            color: #ff4d30;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .section-heading h2 {
-            font-size: 38px;
-            margin-bottom: 10px;
-        }
-
-        .section-heading span {
-            color: #777;
-        }
-
-        .car-filters {
-            display: flex;
-            align-items: end;
-            gap: 9px;
-            width: min(460px, 100%);
-            margin: 0;
-            padding: 12px 14px;
-            border: 1px solid #edf0f3;
-            border-radius: 12px;
-            background: white;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .filter-group {
-            flex: 1;
-        }
-
-        .filter-group label {
-            display: block;
-            margin-bottom: 7px;
-            color: #555;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .filter-group select {
-            width: 100%;
-            height: 36px;
-            padding: 0 8px;
-            border: 1px solid #dfe3e8;
-            border-radius: 6px;
-            background: white;
-            color: #333;
-            cursor: pointer;
-            font: inherit;
-            outline: none;
-        }
-
-        .filter-group select:focus {
-            border-color: #ff4d30;
-            box-shadow: 0 0 0 3px rgba(255, 77, 48, 0.1);
-        }
-
-        .clear-filters-btn {
-            height: 36px;
-            padding: 0 11px;
-            border: 1px solid #ff4d30;
-            border-radius: 6px;
-            background: white;
-            color: #ff4d30;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .clear-filters-btn:hover {
-            background: #fff2ef;
-        }
-
-        .filter-result {
-            max-width: 1200px;
-            min-height: 20px;
-            margin: 0 auto 22px;
-            color: #777;
-            font-size: 13px;
-        }
-
-        .collection-toolbar {
-            display: flex;
-            align-items: end;
-            justify-content: space-between;
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto 22px;
-        }
-
-        .collection-toolbar .section-heading {
-            flex: 1;
-            margin-bottom: 0;
-            text-align: center;
-        }
-
-        .collection-toolbar .filter-result {
-            margin: 8px 0 0;
-            text-align: right;
-        }
-
-        .car-card[hidden] {
-            display: none;
-        }
-
-        @media (max-width: 650px) {
-            .hero-filters {
-                align-items: stretch;
-                flex-direction: column;
-            }
-
-            .hero-filter-btn {
-                width: 100%;
-            }
-
-            .collection-toolbar {
-                align-items: stretch;
-                flex-direction: column;
-                gap: 22px;
-            }
-
-            .collection-toolbar .section-heading {
-                text-align: center;
-            }
-
-            .collection-toolbar .filter-result {
-                position: static;
-                margin: -12px 0 22px;
-                text-align: center;
-            }
-
-            .car-filters {
-                align-items: stretch;
-                flex-direction: column;
-            }
-
-            .clear-filters-btn {
-                width: 100%;
-            }
-        }
-
-        /* ================= CARS ================= */
-
-        .car-container {
-            max-width: 1200px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        .car-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            transition: 0.3s;
-        }
-
-        .car-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .car-image {
-            width: 100%;
-            height: 230px;
-            overflow: hidden;
-            background: #eee;
-        }
-
-        .car-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.5s;
-        }
-
-        .car-card:hover .car-image img {
-            transform: scale(1.08);
-        }
-
-        .car-details {
-            padding: 25px;
-        }
-
-        .car-details h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .car-type {
-            color: #777;
-            margin-bottom: 20px;
-        }
-
-        .car-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            color: #555;
-            font-size: 14px;
-        }
-
-        .price {
-            margin-bottom: 20px;
-        }
-
-        .price strong {
-            color: #ff4d30;
-            font-size: 25px;
-        }
-
-        .price span {
-            color: #777;
-        }
-
-        .rent-btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 7px;
-            background: #ff4d30;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .rent-btn:hover {
-            background: #d9361e;
-        }
-
-        /* ================= WHY US ================= */
-
-        .why-us {
-            background: white;
-            padding: 80px 7%;
-        }
-
-        .features {
-            max-width: 1200px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 25px;
-        }
-
-        .feature-card {
-            text-align: center;
-            padding: 30px 20px;
-            border-radius: 12px;
-            background: #f8f8f8;
-            transition: 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .feature-card h3 {
-            margin-bottom: 10px;
-        }
-
-        .feature-card p {
-            color: #777;
-            line-height: 1.6;
-        }
-
-        /* ================= HOW IT WORKS ================= */
-
-        .how-section {
-            padding: 80px 7%;
-        }
-
-        .steps {
-            max-width: 1000px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            text-align: center;
-        }
-
-        .step {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
-        }
-
-        .step-number {
-            width: 50px;
-            height: 50px;
-            background: #ff4d30;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .step h3 {
-            margin-bottom: 10px;
-        }
-
-        .step p {
-            color: #777;
-        }
-
-        /* ================= TESTIMONIAL ================= */
-
-        .testimonial {
-            background: white;
-            padding: 80px 7%;
-        }
-
-        .review-container {
-            max-width: 1100px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        .review-card {
-            background: #f8f8f8;
-            padding: 30px;
-            border-radius: 12px;
-        }
-
-        .stars {
-            color: #ffb400;
-            font-size: 20px;
-            margin-bottom: 15px;
-        }
-
-        .review-card p {
-            color: #555;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .review-card h4 {
-            margin-bottom: 5px;
-        }
-
-        .review-card span {
-            color: #777;
-        }
-
-        /* ================= FOOTER ================= */
-
-        footer {
-            background: #151515;
-            color: white;
-            padding: 60px 7% 20px;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 50px;
-        }
-
-        .footer-about h2 {
-            color: #ff4d30;
-            margin-bottom: 15px;
-        }
-
-        .footer-about p {
-            color: #aaa;
-            line-height: 1.7;
-        }
-
-        .footer-links h3,
-        .footer-contact h3 {
-            margin-bottom: 15px;
-        }
-
-        .footer-links a {
-            display: block;
-            text-decoration: none;
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-
-        .footer-links a:hover {
-            color: #ff4d30;
-        }
-
-        .footer-contact p {
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-
-        .copyright {
-            text-align: center;
-            border-top: 1px solid #333;
-            margin-top: 40px;
-            padding-top: 20px;
-            color: #777;
-        }
-
-        /* ================= RESPONSIVE ================= */
-
-        @media (max-width: 900px) {
-
-            .nav-links {
-                display: none;
-            }
-
-            .menu-btn {
-                display: block;
-            }
-
-            .car-container {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .features {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .review-container {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .search-box {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .hero h1 {
-                font-size: 42px;
-            }
-        }
-
-        @media (max-width: 600px) {
-
-            .car-container {
-                grid-template-columns: 1fr;
-            }
-
-            .features {
-                grid-template-columns: 1fr;
-            }
-
-            .steps {
-                grid-template-columns: 1fr;
-            }
-
-            .review-container {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-container {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-buttons {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 35px;
-            }
-
-            .auth-card {
-                grid-template-columns: 1fr;
-                max-height: calc(100vh - 40px);
-                overflow-y: auto;
-            }
-
-            .auth-visual {
-                display: none;
-            }
-
-            .auth-content {
-                padding: 38px 25px 30px;
-            }
-
-            .account-card {
-                padding: 30px 25px;
-            }
-
-            .account-overview {
-                grid-template-columns: 1fr;
-            }
-
-            .account-actions {
-                flex-direction: column;
-            }
-
-            .booking-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .booking-summary,
-            .booking-form-card {
-                padding: 25px;
-            }
-
-            .booking-form-actions {
-                flex-direction: column;
-            }
-
-            .thankyou-card {
-                padding: 32px 25px;
-            }
-
-            .thankyou-actions {
-                flex-direction: column;
-            }
-
-            .cancellation-card {
-                padding: 32px 25px;
-            }
-
-            .cancellation-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -1654,17 +32,48 @@
                                 <stop offset="100%" stop-color="#d92f1f" />
                             </linearGradient>
                         </defs>
-                        <path d="M16 48L25 31C28 26 33 23 39 23H73C79 23 84 25 88 30L96 38H103C109 38 113 42 113 48V49C113 53 109 56 105 56H102C100 62 94 66 85 66H35C26 66 20 62 18 56H13C10 56 7 53 7 49V47C7 42 11 38 16 38H16Z" fill="url(#driveeasyBody)"/>
-                        <path d="M34 24L47 18H77C82 18 87 20 90 24L96 32H30L34 24Z" fill="#f5f8fb" opacity="0.94"/>
-                        <path d="M40 24L55 16H74L86 24" fill="none" stroke="#b5c9d8" stroke-width="3" stroke-linecap="round"/>
-                        <path d="M33 39H91" stroke="#a72812" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+
+                        <path
+                            d="M16 48L25 31C28 26 33 23 39 23H73C79 23 84 25 88 30L96 38H103C109 38 113 42 113 48V49C113 53 109 56 105 56H102C100 62 94 66 85 66H35C26 66 20 62 18 56H13C10 56 7 53 7 49V47C7 42 11 38 16 38H16Z"
+                            fill="url(#driveeasyBody)"
+                        />
+
+                        <path
+                            d="M34 24L47 18H77C82 18 87 20 90 24L96 32H30L34 24Z"
+                            fill="#f5f8fb"
+                            opacity="0.94"
+                        />
+
+                        <path
+                            d="M40 24L55 16H74L86 24"
+                            fill="none"
+                            stroke="#b5c9d8"
+                            stroke-width="3"
+                            stroke-linecap="round"
+                        />
+
+                        <path
+                            d="M33 39H91"
+                            stroke="#a72812"
+                            stroke-width="3"
+                            stroke-linecap="round"
+                            opacity="0.7"
+                        />
+
                         <circle cx="30" cy="56" r="12" fill="#1f2937"/>
                         <circle cx="30" cy="56" r="5" fill="#e5e7eb"/>
                         <circle cx="87" cy="56" r="12" fill="#1f2937"/>
                         <circle cx="87" cy="56" r="5" fill="#e5e7eb"/>
-                        <path d="M98 41L106 41" stroke="#ffd76a" stroke-width="4" stroke-linecap="round"/>
+
+                        <path
+                            d="M98 41L106 41"
+                            stroke="#ffd76a"
+                            stroke-width="4"
+                            stroke-linecap="round"
+                        />
                     </svg>
                 </span>
+
                 <span>DriveEasy</span>
             </div>
 
@@ -1679,109 +88,294 @@
             <div class="nav-buttons">
                 <button class="login-btn" onclick="login()">Login</button>
                 <button class="signup-btn" onclick="signup()">Sign Up</button>
-                <button class="account-btn" id="accountNavBtn" type="button" onclick="openAccount()">My Account</button>
+                <button
+                    class="account-btn"
+                    id="accountNavBtn"
+                    type="button"
+                    onclick="openAccount()"
+                >
+                    My Account
+                </button>
             </div>
 
-            <div class="menu-btn" id="menuBtn">
-                ☰
-            </div>
+            <div class="menu-btn" id="menuBtn">☰</div>
 
         </nav>
     </header>
 
-    <div class="auth-modal" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+
+    <!-- ================= AUTH MODAL ================= -->
+
+    <div
+        class="auth-modal"
+        id="authModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="authTitle"
+    >
         <div class="auth-card">
+
             <div class="auth-visual">
                 <div>
                     <h2>Every journey starts here.</h2>
-                    <p>Save your favorite cars and book your next adventure in a few clicks.</p>
+                    <p>
+                        Save your favorite cars and book your next adventure
+                        in a few clicks.
+                    </p>
                 </div>
             </div>
 
             <div class="auth-content">
-                <button class="auth-close" type="button" onclick="closeAuth()" aria-label="Close">&times;</button>
+
+                <button
+                    class="auth-close"
+                    type="button"
+                    onclick="closeAuth()"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
                 <h2 id="authTitle">Welcome back</h2>
-                <p class="auth-subtitle" id="authSubtitle">Log in to manage your bookings.</p>
+
+                <p class="auth-subtitle" id="authSubtitle">
+                    Log in to manage your bookings.
+                </p>
 
                 <div class="auth-switch">
-                    <button id="loginTab" class="active" type="button" onclick="showAuthForm('login')">Login</button>
-                    <button id="signupTab" type="button" onclick="showAuthForm('signup')">Sign Up</button>
+                    <button
+                        id="loginTab"
+                        class="active"
+                        type="button"
+                        onclick="showAuthForm('login')"
+                    >
+                        Login
+                    </button>
+
+                    <button
+                        id="signupTab"
+                        type="button"
+                        onclick="showAuthForm('signup')"
+                    >
+                        Sign Up
+                    </button>
                 </div>
 
-                <form class="auth-form" id="authForm" onsubmit="submitAuth(event)">
+                <form
+                    class="auth-form"
+                    id="authForm"
+                    onsubmit="submitAuth(event)"
+                >
+
                     <div id="nameField" hidden>
                         <label for="authName">Full name</label>
-                        <input id="authName" type="text" autocomplete="name" placeholder="Your full name">
+                        <input
+                            id="authName"
+                            type="text"
+                            autocomplete="name"
+                            placeholder="Your full name"
+                        >
                     </div>
 
                     <label for="authEmail">Email address</label>
-                    <input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
+
+                    <input
+                        id="authEmail"
+                        type="email"
+                        autocomplete="email"
+                        placeholder="you@example.com"
+                        required
+                    >
 
                     <label for="authPassword">Password</label>
-                    <input id="authPassword" type="password" autocomplete="current-password" placeholder="Enter your password" minlength="6" required>
 
-                    <button class="auth-submit" id="authSubmit" type="submit">Log In</button>
-                    <p class="auth-error" id="authError" role="alert"></p>
-                    <p class="auth-note">By continuing, you agree to DriveEasy's terms.</p>
+                    <input
+                        id="authPassword"
+                        type="password"
+                        autocomplete="current-password"
+                        placeholder="Enter your password"
+                        minlength="6"
+                        required
+                    >
+
+                    <button
+                        class="auth-submit"
+                        id="authSubmit"
+                        type="submit"
+                    >
+                        Log In
+                    </button>
+
+                    <p
+                        class="auth-error"
+                        id="authError"
+                        role="alert"
+                    ></p>
+
+                    <p class="auth-note">
+                        By continuing, you agree to DriveEasy's terms.
+                    </p>
+
                 </form>
+
             </div>
         </div>
     </div>
 
-    <div class="account-modal" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+
+    <!-- ================= ACCOUNT MODAL ================= -->
+
+    <div
+        class="account-modal"
+        id="accountModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="accountTitle"
+    >
         <div class="account-card">
-            <button class="auth-close" type="button" onclick="closeAccount()" aria-label="Close">&times;</button>
-            <div class="account-success" aria-hidden="true">&#10003;</div>
+
+            <button
+                class="auth-close"
+                type="button"
+                onclick="closeAccount()"
+                aria-label="Close"
+            >
+                &times;
+            </button>
+
+            <div class="account-success" aria-hidden="true">
+                &#10003;
+            </div>
+
             <h2 id="accountTitle">Login successful</h2>
-            <p id="accountMessage">Welcome to your DriveEasy account.</p>
+
+            <p id="accountMessage">
+                Welcome to your DriveEasy account.
+            </p>
+
             <div class="account-overview">
+
                 <div class="account-stat">
                     <span>Signed-in account</span>
                     <strong id="accountEmail"></strong>
                 </div>
+
                 <div class="account-stat">
                     <span>Bookings</span>
                     <strong id="accountBookingCount">0</strong>
                 </div>
+
                 <div class="account-stat">
                     <span>Member status</span>
                     <strong>Active</strong>
                 </div>
+
             </div>
+
             <div class="account-details">
+
                 <div>
                     <span>Full name</span>
                     <strong id="accountName"></strong>
                 </div>
+
             </div>
+
             <div class="account-bookings">
+
                 <h3>Your bookings</h3>
+
                 <div id="accountBookingList">
-                    <p>Your upcoming car rentals will appear here after you book a vehicle.</p>
+                    <p>
+                        Your upcoming car rentals will appear here
+                        after you book a vehicle.
+                    </p>
                 </div>
+
             </div>
+
             <div class="account-actions">
-                <button class="account-home" type="button" onclick="closeAccount()">Continue browsing</button>
-                <button class="logout-btn" type="button" onclick="logout()">Log out</button>
+
+                <button
+                    class="account-home"
+                    type="button"
+                    onclick="closeAccount()"
+                >
+                    Continue browsing
+                </button>
+
+                <button
+                    class="logout-btn"
+                    type="button"
+                    onclick="logout()"
+                >
+                    Log out
+                </button>
+
             </div>
+
         </div>
     </div>
 
-    <section class="booking-page" id="bookingPage" aria-labelledby="bookingTitle">
+
+    <!-- ================= BOOKING PAGE ================= -->
+
+    <section
+        class="booking-page"
+        id="bookingPage"
+        aria-labelledby="bookingTitle"
+    >
+
         <div class="booking-layout">
+
             <div class="booking-summary">
-                <img id="bookingCarImage" src="" alt="Selected rental car">
+
+                <img
+                    id="bookingCarImage"
+                    src=""
+                    alt="Selected rental car"
+                >
+
                 <h2 id="bookingCarName">Select a car</h2>
+
                 <p id="bookingCarType"></p>
-                <div class="price"><strong id="bookingCarPrice"></strong><span> / day</span></div>
+
+                <div class="price">
+                    <strong id="bookingCarPrice"></strong>
+                    <span> / day</span>
+                </div>
+
             </div>
+
             <div class="booking-form-card">
-                <h2 id="bookingTitle">Complete your booking</h2>
-                <p>Choose your dates and pick-up location to reserve this car.</p>
-                <form class="booking-form" id="bookingForm" onsubmit="submitBooking(event)">
-                    <label for="bookingLocation">Pick-up location
-                        <input id="bookingLocation" type="text" list="delhiNcrCities" placeholder="Select an NCR city" required>
+
+                <h2 id="bookingTitle">
+                    Complete your booking
+                </h2>
+
+                <p>
+                    Choose your dates and pick-up location
+                    to reserve this car.
+                </p>
+
+                <form
+                    class="booking-form"
+                    id="bookingForm"
+                    onsubmit="submitBooking(event)"
+                >
+
+                    <label for="bookingLocation">
+                        Pick-up location
+
+                        <input
+                            id="bookingLocation"
+                            type="text"
+                            list="delhiNcrCities"
+                            placeholder="Select an NCR city"
+                            required
+                        >
                     </label>
+
                     <datalist id="delhiNcrCities">
                         <option value="Delhi"></option>
                         <option value="New Delhi"></option>
@@ -1804,77 +398,254 @@
                         <option value="Nehru Place"></option>
                         <option value="Surajkund"></option>
                     </datalist>
-                    <label for="bookingPickupDate">Pick-up date
-                        <input id="bookingPickupDate" type="date" required>
+
+                    <label for="bookingPickupDate">
+                        Pick-up date
+                        <input
+                            id="bookingPickupDate"
+                            type="date"
+                            required
+                        >
                     </label>
-                    <label for="bookingPickupTime">Start time
-                        <input id="bookingPickupTime" type="time" required>
+
+                    <label for="bookingPickupTime">
+                        Start time
+                        <input
+                            id="bookingPickupTime"
+                            type="time"
+                            required
+                        >
                     </label>
-                    <label for="bookingReturnDate">Return date
-                        <input id="bookingReturnDate" type="date" required>
+
+                    <label for="bookingReturnDate">
+                        Return date
+                        <input
+                            id="bookingReturnDate"
+                            type="date"
+                            required
+                        >
                     </label>
-                    <label for="bookingReturnTime">End time
-                        <input id="bookingReturnTime" type="time" required>
+
+                    <label for="bookingReturnTime">
+                        End time
+                        <input
+                            id="bookingReturnTime"
+                            type="time"
+                            required
+                        >
                     </label>
-                    <p class="booking-error" id="bookingError" role="alert"></p>
+
+                    <p
+                        class="booking-error"
+                        id="bookingError"
+                        role="alert"
+                    ></p>
+
                     <div class="booking-form-actions">
-                        <button class="booking-submit" id="bookingSubmit" type="submit">Confirm booking</button>
-                        <button class="booking-cancel" type="button" onclick="closeBooking()">Back to cars</button>
+
+                        <button
+                            class="booking-submit"
+                            id="bookingSubmit"
+                            type="submit"
+                        >
+                            Confirm booking
+                        </button>
+
+                        <button
+                            class="booking-cancel"
+                            type="button"
+                            onclick="closeBooking()"
+                        >
+                            Back to cars
+                        </button>
+
                     </div>
+
                 </form>
+
             </div>
+
         </div>
+
     </section>
 
-    <section class="thankyou-page" id="thankyouPage" aria-labelledby="thankyouTitle">
+
+    <!-- ================= THANK YOU PAGE ================= -->
+
+    <section
+        class="thankyou-page"
+        id="thankyouPage"
+        aria-labelledby="thankyouTitle"
+    >
+
         <div class="thankyou-card">
-            <img class="thankyou-car-image" id="thankyouCarImage" src="" alt="Booked rental car">
-            <div class="thankyou-icon" aria-hidden="true">&#10003;</div>
-            <h2 id="thankyouTitle">Thank you for your booking</h2>
-            <p>Your car has been reserved successfully. The booking is now saved in your account.</p>
+
+            <img
+                class="thankyou-car-image"
+                id="thankyouCarImage"
+                src=""
+                alt="Booked rental car"
+            >
+
+            <div class="thankyou-icon" aria-hidden="true">
+                &#10003;
+            </div>
+
+            <h2 id="thankyouTitle">
+                Thank you for your booking
+            </h2>
+
+            <p>
+                Your car has been reserved successfully.
+                The booking is now saved in your account.
+            </p>
+
             <div class="thankyou-details">
                 <strong id="thankyouCar"></strong>
                 <span id="thankyouDates"></span>
                 <span id="thankyouLocation"></span>
             </div>
+
             <div class="thankyou-actions">
-                <button class="thankyou-account" type="button" onclick="showThankYouAccount()">View my account</button>
-                <button class="thankyou-home" type="button" onclick="closeThankYou()">Browse more cars</button>
+
+                <button
+                    class="thankyou-account"
+                    type="button"
+                    onclick="showThankYouAccount()"
+                >
+                    View my account
+                </button>
+
+                <button
+                    class="thankyou-home"
+                    type="button"
+                    onclick="closeThankYou()"
+                >
+                    Browse more cars
+                </button>
+
             </div>
+
         </div>
+
     </section>
 
-    <section class="cancel-modal" id="cancelModal" aria-labelledby="cancelTitle">
+
+    <!-- ================= CANCEL MODAL ================= -->
+
+    <section
+        class="cancel-modal"
+        id="cancelModal"
+        aria-labelledby="cancelTitle"
+    >
+
         <div class="cancel-card">
-            <h2 id="cancelTitle">Cancel your booked car?</h2>
-            <p id="cancelBookingSummary">Please tell us why you are cancelling. This action cannot be undone.</p>
-            <label for="cancelReason">Reason
-                <textarea id="cancelReason" placeholder="Tell us why you want to cancel" required></textarea>
+
+            <h2 id="cancelTitle">
+                Cancel your booked car?
+            </h2>
+
+            <p id="cancelBookingSummary">
+                Please tell us why you are cancelling.
+                This action cannot be undone.
+            </p>
+
+            <label for="cancelReason">
+                Reason
+
+                <textarea
+                    id="cancelReason"
+                    placeholder="Tell us why you want to cancel"
+                    required
+                ></textarea>
+
             </label>
-            <p class="booking-error" id="cancelError" role="alert"></p>
+
+            <p
+                class="booking-error"
+                id="cancelError"
+                role="alert"
+            ></p>
+
             <div class="cancel-actions">
-                <button class="cancel-confirm" id="cancelConfirm" type="button" onclick="confirmCancellation()">Confirm cancellation</button>
-                <button class="cancel-close" type="button" onclick="closeCancellation()">Keep booking</button>
+
+                <button
+                    class="cancel-confirm"
+                    id="cancelConfirm"
+                    type="button"
+                    onclick="confirmCancellation()"
+                >
+                    Confirm cancellation
+                </button>
+
+                <button
+                    class="cancel-close"
+                    type="button"
+                    onclick="closeCancellation()"
+                >
+                    Keep booking
+                </button>
+
             </div>
+
         </div>
+
     </section>
 
-    <section class="cancellation-page" id="cancellationPage" aria-labelledby="cancellationTitle">
+
+    <!-- ================= CANCELLATION PAGE ================= -->
+
+    <section
+        class="cancellation-page"
+        id="cancellationPage"
+        aria-labelledby="cancellationTitle"
+    >
+
         <div class="cancellation-card">
-            <div class="cancellation-icon" aria-hidden="true">&#10005;</div>
-            <h2 id="cancellationTitle">Cancellation confirmed</h2>
-            <p>Your booking has been cancelled and removed from your account. The car is available to book again.</p>
+
+            <div class="cancellation-icon" aria-hidden="true">
+                &#10005;
+            </div>
+
+            <h2 id="cancellationTitle">
+                Cancellation confirmed
+            </h2>
+
+            <p>
+                Your booking has been cancelled and removed
+                from your account. The car is available to book again.
+            </p>
+
             <div class="cancellation-details">
                 <strong id="cancelledCar"></strong>
                 <span id="cancelledDates"></span>
                 <span id="cancelledReason"></span>
             </div>
+
             <div class="cancellation-actions">
-                <button class="cancellation-account" type="button" onclick="showCancellationAccount()">View my account</button>
-                <button class="cancellation-home" type="button" onclick="closeCancellationSuccess()">Browse more cars</button>
+
+                <button
+                    class="cancellation-account"
+                    type="button"
+                    onclick="showCancellationAccount()"
+                >
+                    View my account
+                </button>
+
+                <button
+                    class="cancellation-home"
+                    type="button"
+                    onclick="closeCancellationSuccess()"
+                >
+                    Browse more cars
+                </button>
+
             </div>
+
         </div>
+
     </section>
+
 
     <!-- ================= HERO ================= -->
 
@@ -1896,68 +667,132 @@
                 affordable and comfortable journey.
             </p>
 
-            <div class="hero-filters" aria-label="Filter cars">
+            <div
+                class="hero-filters"
+                aria-label="Filter cars"
+            >
+
                 <div class="hero-filter-group">
-                    <label for="heroCarTypeFilter">Car Type</label>
+
+                    <label for="heroCarTypeFilter">
+                        Car Type
+                    </label>
+
                     <select id="heroCarTypeFilter">
-                        <option value="all">All types</option>
-                        <option value="sedan">Sedan</option>
-                        <option value="suv">SUV</option>
-                        <option value="muv">MUV</option>
-                        <option value="hatchback">Hatchback</option>
+
+                        <option value="all">
+                            All types
+                        </option>
+
+                        <option value="sedan">
+                            Sedan
+                        </option>
+
+                        <option value="suv">
+                            SUV
+                        </option>
+
+                        <option value="muv">
+                            MUV
+                        </option>
+
+                        <option value="hatchback">
+                            Hatchback
+                        </option>
+
                     </select>
+
                 </div>
+
 
                 <div class="hero-filter-group">
-                    <label for="heroCarPriceFilter">Price per day</label>
+
+                    <label for="heroCarPriceFilter">
+                        Price per day
+                    </label>
+
                     <select id="heroCarPriceFilter">
-                        <option value="all">Any price</option>
-                        <option value="budget">Under ₹2,000</option>
-                        <option value="standard">₹2,000 - ₹3,000</option>
-                        <option value="premium">Above ₹3,000</option>
+
+                        <option value="all">
+                            Any price
+                        </option>
+
+                        <option value="budget">
+                            Under ₹2,000
+                        </option>
+
+                        <option value="standard">
+                            ₹2,000 - ₹3,000
+                        </option>
+
+                        <option value="premium">
+                            Above ₹3,000
+                        </option>
+
                     </select>
+
                 </div>
 
-                <button class="hero-filter-btn" type="button" onclick="applyHeroFilters()">
+
+                <button
+                    class="hero-filter-btn"
+                    type="button"
+                    onclick="applyHeroFilters()"
+                >
                     Apply Filter
                 </button>
+
             </div>
 
         </div>
 
     </section>
 
+
     <!-- ================= CARS SECTION ================= -->
 
     <section class="cars-section" id="cars">
 
         <div class="collection-toolbar">
+
             <div class="section-heading">
+
                 <p>OUR COLLECTION</p>
-                <h2>Popular Rental Cars</h2>
+
+                <h2>
+                    Popular Rental Cars
+                </h2>
+
                 <span>
                     Choose the car that fits your journey.
                 </span>
+
             </div>
 
         </div>
 
+
         <div class="car-container">
+
 
             <!-- CAR 1 -->
 
             <div class="car-card">
 
                 <div class="car-image">
+
                     <img
                         src="https://cdn-s3.autocarindia.com/legacy/cdni/ExtraImages/20200330032320_2020-Hyundai-Verna-1.jpg"
                         alt="Hyundai Verna"
                     >
+
                 </div>
 
                 <div class="car-details">
 
-                    <h3>Hyundai Verna</h3>
+                    <h3>
+                        Hyundai Verna
+                    </h3>
 
                     <p class="car-type">
                         🚘 Premium Sedan
@@ -1981,22 +816,28 @@
                     </button>
 
                 </div>
+
             </div>
+
 
             <!-- CAR 2 -->
 
             <div class="car-card">
 
                 <div class="car-image">
+
                     <img
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfNaTFtAVCffTh66_GZ2YkA20VhUFGbcLcZlp30Dcn9w&s"
                         alt="Volkswagen Virtus"
                     >
+
                 </div>
 
                 <div class="car-details">
 
-                    <h3>Volkswagen Virtus</h3>
+                    <h3>
+                        Volkswagen Virtus
+                    </h3>
 
                     <p class="car-type">
                         🚘 Premium Sedan
@@ -2020,22 +861,28 @@
                     </button>
 
                 </div>
+
             </div>
+
 
             <!-- CAR 3 -->
 
             <div class="car-card">
 
                 <div class="car-image">
+
                     <img
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXaanHo3Sd3a6jpelrP7bQp4UigapKKB4JLMD8HhFCWw&s"
                         alt="Honda City"
                     >
+
                 </div>
 
                 <div class="car-details">
 
-                    <h3>Honda City</h3>
+                    <h3>
+                        Honda City
+                    </h3>
 
                     <p class="car-type">
                         🚘 Premium Sedan
@@ -2059,22 +906,28 @@
                     </button>
 
                 </div>
+
             </div>
+
 
             <!-- CAR 4 -->
 
             <div class="car-card">
 
                 <div class="car-image">
+
                     <img
                         src="https://images.overdrive.in/uploads/2024/08/Untitled-design-53-2024-08-8a9e149bd66da03e6e92b8ce39679079-900x506.png"
                         alt="Mahindra Thar Roxx"
                     >
+
                 </div>
 
                 <div class="car-details">
 
-                    <h3>Mahindra Thar Roxx</h3>
+                    <h3>
+                        Mahindra Thar Roxx
+                    </h3>
 
                     <p class="car-type">
                         🚙 Premium SUV
@@ -2098,22 +951,28 @@
                     </button>
 
                 </div>
+
             </div>
+
 
             <!-- CAR 5 -->
 
             <div class="car-card">
 
                 <div class="car-image">
+
                     <img
                         src="https://auto.yugatech.com/wp-content/uploads/2025/05/image6.jpeg"
                         alt="Hyundai Creta"
                     >
+
                 </div>
 
                 <div class="car-details">
 
-                    <h3>Hyundai Creta</h3>
+                    <h3>
+                        Hyundai Creta
+                    </h3>
 
                     <p class="car-type">
                         🚙 Premium SUV
@@ -2137,7 +996,9 @@
                     </button>
 
                 </div>
+
             </div>
+
 
             <!-- CAR 6 -->
 
@@ -2145,17 +1006,19 @@
 
                 <div class="car-image">
                     <img
-                        src="https://www.team-bhp.com/sites/default/files/styles/check_extra_large_for_review/public/Suzuki%20Brezza%20ownership%20review.jpg"
+                        src="https://www.motorbeam.com/wp-content/uploads/Maruti-Suzuki-Brezza-Price.jpg"
                         alt="Maruti Suzuki Brezza"
                     >
                 </div>
 
                 <div class="car-details">
 
-                    <h3>Maruti Suzuki Brezza</h3>
+                    <h3>
+                        Maruti Suzuki Brezza
+                    </h3>
 
                     <p class="car-type">
-                        🚙 Compact SUV
+                        🚙 SUV
                     </p>
 
                     <div class="car-info">
@@ -2164,7 +1027,7 @@
                     </div>
 
                     <div class="price">
-                        <strong>₹2,000</strong>
+                        <strong>₹2,300</strong>
                         <span>/ day</span>
                     </div>
 
@@ -2176,254 +1039,281 @@
                     </button>
 
                 </div>
+
             </div>
 
 
+            <!-- CAR 7 -->
 
-        <!-- CAR 7 -->
+            <div class="car-card">
 
-<div class="car-card">
+                <div class="car-image">
+                    <img
+                        src="https://img-ik.cars.co.za/news-site-za/images/2025/09/harrier-sa-1-tata.jpg"
+                        alt="Tata Harrier"
+                    >
+                </div>
 
-    <div class="car-image">
-        <img
-            src="https://news-site-za.s3.af-south-1.amazonaws.com/images/2025/09/harrier-sa-1-tata.jpg"
-            alt="Tata Harrier"
-        >
-    </div>
+                <div class="car-details">
 
-    <div class="car-details">
+                    <h3>
+                        Tata Harrier
+                    </h3>
 
-        <h3>Tata Harrier</h3>
+                    <p class="car-type">
+                        🚙 Premium SUV
+                    </p>
 
-        <p class="car-type">
-            🚙 Premium SUV
-        </p>
+                    <div class="car-info">
+                        <span>👤 5 Seats</span>
+                        <span>⚙ Automatic</span>
+                    </div>
 
-        <div class="car-info">
-            <span>👤 5 Seats</span>
-            <span>⚙ Automatic</span>
-        </div>
+                    <div class="price">
+                        <strong>₹3,200</strong>
+                        <span>/ day</span>
+                    </div>
 
-        <div class="price">
-            <strong>₹3,200</strong>
-            <span>/ day</span>
-        </div>
+                    <button
+                        class="rent-btn"
+                        onclick="rentCar('Tata Harrier')"
+                    >
+                        Rent Now
+                    </button>
 
-        <button
-            class="rent-btn"
-            onclick="rentCar('Tata Harrier')"
-        >
-            Rent Now
-        </button>
+                </div>
 
-    </div>
-</div>
-
-
-<!-- CAR 8 -->
-
-<div class="car-card">
-
-    <div class="car-image">
-        <img
-            src="https://stimg.cardekho.com/images/carexteriorimages/630x420/Toyota/Innova-Hycross/12719/1776918655192/front-left-side-47.jpg"
-            alt="Toyota Innova"
-        >
-    </div>
-
-    <div class="car-details">
-
-        <h3>Toyota Innova </h3>
-
-        <p class="car-type">
-            🚙 Premium MPV
-        </p>
-
-        <div class="car-info">
-            <span>👤 7 Seats</span>
-            <span>⚙ Automatic</span>
-        </div>
-
-        <div class="price">
-            <strong>₹3,500</strong>
-            <span>/ day</span>
-        </div>
-
-        <button
-            class="rent-btn"
-            onclick="rentCar('Toyota Innova')"
-        >
-            Rent Now
-        </button>
-
-    </div>
-</div>
-
+            </div>
 
 
             <!-- CAR 8 -->
 
-<div class="car-card">
+            <div class="car-card">
 
-    <div class="car-image">
-        <img
-            src="https://www.jazzycars.in/wp-content/uploads/2023/08/WhatsApp-Image-2023-08-06-at-7.06.31-PM.jpeg"
-            alt="Toyota Fortuner"
-        >
-    </div>
+                <div class="car-image">
 
-    <div class="car-details">
+                    <img
+                        src="https://stimg.cardekho.com/images/carexteriorimages/630x420/Toyota/Innova-Hycross/12719/1776918655192/front-left-side-47.jpg"
+                        alt="Toyota Innova"
+                    >
 
-        <h3>Toyota Fortuner</h3>
+                </div>
 
-        <p class="car-type">
-            🚙 Premium SUV
-        </p>
+                <div class="car-details">
 
-        <div class="car-info">
-            <span>👤 7 Seats</span>
-            <span>⚙ Automatic</span>
-        </div>
+                    <h3>
+                        Toyota Innova
+                    </h3>
 
-        <div class="price">
-            <strong>₹4,500</strong>
-            <span>/ day</span>
-        </div>
+                    <p class="car-type">
+                        🚙 Premium MPV
+                    </p>
 
-        <button
-            class="rent-btn"
-            onclick="rentCar('Toyota Fortuner')"
-        >
-            Rent Now
-        </button>
+                    <div class="car-info">
+                        <span>👤 7 Seats</span>
+                        <span>⚙ Automatic</span>
+                    </div>
 
-    </div>
-</div>
+                    <div class="price">
+                        <strong>₹3,500</strong>
+                        <span>/ day</span>
+                    </div>
 
+                    <button
+                        class="rent-btn"
+                        onclick="rentCar('Toyota Innova')"
+                    >
+                        Rent Now
+                    </button>
 
-<!-- CAR 9 -->
+                </div>
 
-<div class="car-card">
-
-    <div class="car-image">
-        <img
-            src="https://www.team-bhp.com/sites/default/files/styles/check_high_res/public/2022-maruti-baleno-05.jpg"
-            alt="Maruti Suzuki Baleno"
-        >
-    </div>
-
-    <div class="car-details">
-
-        <h3>Maruti Suzuki Baleno</h3>
-
-        <p class="car-type">
-            🚘 Premium Hatchback
-        </p>
-
-        <div class="car-info">
-            <span>👤 5 Seats</span>
-            <span>⚙ Automatic</span>
-        </div>
-
-        <div class="price">
-            <strong>₹1,800</strong>
-            <span>/ day</span>
-        </div>
-
-        <button
-            class="rent-btn"
-            onclick="rentCar('Maruti Suzuki Baleno')"
-        >
-            Rent Now
-        </button>
-
-    </div>
-</div>
+            </div>
 
 
-<!-- CAR 10 -->
+            <!-- CAR 9 -->
 
-<div class="car-card">
+            <div class="car-card">
 
-    <div class="car-image">
-        <img
-            src="https://cdn-s3.autocarindia.com/legacy/cdni/mmv_images/colors/20251016103232_Maruti_Suzuki_Swift_Bluish_Black.jpg"
-            alt="Maruti Suzuki Swift"
-        >
-    </div>
+                <div class="car-image">
 
-    <div class="car-details">
+                    <img
+                        src="https://www.jazzycars.in/wp-content/uploads/2023/08/WhatsApp-Image-2023-08-06-at-7.06.31-PM.jpeg"
+                        alt="Toyota Fortuner"
+                    >
 
-        <h3>Maruti Suzuki Swift</h3>
+                </div>
 
-        <p class="car-type">
-            🚘 Hatchback
-        </p>
+                <div class="car-details">
 
-        <div class="car-info">
-            <span>👤 5 Seats</span>
-            <span>⚙ Manual</span>
-        </div>
+                    <h3>
+                        Toyota Fortuner
+                    </h3>
 
-        <div class="price">
-            <strong>₹1,600</strong>
-            <span>/ day</span>
-        </div>
+                    <p class="car-type">
+                        🚙 Premium SUV
+                    </p>
 
-        <button
-            class="rent-btn"
-            onclick="rentCar('Maruti Suzuki Swift')"
-        >
-            Rent Now
-        </button>
+                    <div class="car-info">
+                        <span>👤 7 Seats</span>
+                        <span>⚙ Automatic</span>
+                    </div>
 
-    </div>
-</div>
+                    <div class="price">
+                        <strong>₹4,500</strong>
+                        <span>/ day</span>
+                    </div>
+
+                    <button
+                        class="rent-btn"
+                        onclick="rentCar('Toyota Fortuner')"
+                    >
+                        Rent Now
+                    </button>
+
+                </div>
+
+            </div>
 
 
-<!-- CAR 11 -->
+            <!-- CAR 10 -->
 
-<div class="car-card">
+            <div class="car-card">
 
-    <div class="car-image">
-        <img
-            src="https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Altroz/12551/1751090492461/exterior-image-164.jpg"
-            alt="Tata Altroz"
-        >
-    </div>
+                <div class="car-image">
 
-    <div class="car-details">
+                    <img
+                        src="https://www.team-bhp.com/sites/default/files/styles/check_high_res/public/2022-maruti-baleno-05.jpg"
+                        alt="Maruti Suzuki Baleno"
+                    >
 
-        <h3>Tata Altroz</h3>
+                </div>
 
-        <p class="car-type">
-            🚘 Premium Hatchback
-        </p>
+                <div class="car-details">
 
-        <div class="car-info">
-            <span>👤 5 Seats</span>
-            <span>⚙ Manual</span>
-        </div>
+                    <h3>
+                        Maruti Suzuki Baleno
+                    </h3>
 
-        <div class="price">
-            <strong>₹1,900</strong>
-            <span>/ day</span>
-        </div>
+                    <p class="car-type">
+                        🚘 Premium Hatchback
+                    </p>
 
-        <button
-            class="rent-btn"
-            onclick="rentCar('Tata Altroz')"
-        >
-            Rent Now
-        </button>
+                    <div class="car-info">
+                        <span>👤 5 Seats</span>
+                        <span>⚙ Automatic</span>
+                    </div>
 
-    </div>
-</div>
+                    <div class="price">
+                        <strong>₹1,800</strong>
+                        <span>/ day</span>
+                    </div>
 
+                    <button
+                        class="rent-btn"
+                        onclick="rentCar('Maruti Suzuki Baleno')"
+                    >
+                        Rent Now
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CAR 11 -->
+
+            <div class="car-card">
+
+                <div class="car-image">
+
+                    <img
+                        src="https://cdn-s3.autocarindia.com/legacy/cdni/mmv_images/colors/20251016103232_Maruti_Suzuki_Swift_Bluish_Black.jpg"
+                        alt="Maruti Suzuki Swift"
+                    >
+
+                </div>
+
+                <div class="car-details">
+
+                    <h3>
+                        Maruti Suzuki Swift
+                    </h3>
+
+                    <p class="car-type">
+                        🚘 Hatchback
+                    </p>
+
+                    <div class="car-info">
+                        <span>👤 5 Seats</span>
+                        <span>⚙ Manual</span>
+                    </div>
+
+                    <div class="price">
+                        <strong>₹1,600</strong>
+                        <span>/ day</span>
+                    </div>
+
+                    <button
+                        class="rent-btn"
+                        onclick="rentCar('Maruti Suzuki Swift')"
+                    >
+                        Rent Now
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CAR 12 -->
+
+            <div class="car-card">
+
+                <div class="car-image">
+
+                    <img
+                        src="https://stimg.cardekho.com/images/carexteriorimages/930x620/Tata/Altroz/12551/1751090492461/exterior-image-164.jpg"
+                        alt="Tata Altroz"
+                    >
+
+                </div>
+
+                <div class="car-details">
+
+                    <h3>
+                        Tata Altroz
+                    </h3>
+
+                    <p class="car-type">
+                        🚘 Premium Hatchback
+                    </p>
+
+                    <div class="car-info">
+                        <span>👤 5 Seats</span>
+                        <span>⚙ Manual</span>
+                    </div>
+
+                    <div class="price">
+                        <strong>₹1,900</strong>
+                        <span>/ day</span>
+                    </div>
+
+                    <button
+                        class="rent-btn"
+                        onclick="rentCar('Tata Altroz')"
+                    >
+                        Rent Now
+                    </button>
+
+                </div>
+
+            </div>
 
         </div>
 
     </section>
+
 
     <!-- ================= WHY US ================= -->
 
@@ -2442,52 +1332,80 @@
         <div class="features">
 
             <div class="feature-card">
-                <div class="feature-icon">🚗</div>
 
-                <h3>Wide Range of Cars</h3>
+                <div class="feature-icon">
+                    🚗
+                </div>
+
+                <h3>
+                    Wide Range of Cars
+                </h3>
 
                 <p>
                     Choose from economy, luxury, SUV
                     and premium cars.
                 </p>
+
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">💰</div>
 
-                <h3>Best Prices</h3>
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    💰
+                </div>
+
+                <h3>
+                    Best Prices
+                </h3>
 
                 <p>
                     Get affordable rental prices with
                     no hidden charges.
                 </p>
+
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">🛡️</div>
 
-                <h3>Safe & Reliable</h3>
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🛡️
+                </div>
+
+                <h3>
+                    Safe & Reliable
+                </h3>
 
                 <p>
                     Well-maintained vehicles and reliable
                     customer support.
                 </p>
+
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">📞</div>
 
-                <h3>24/7 Support</h3>
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    📞
+                </div>
+
+                <h3>
+                    24/7 Support
+                </h3>
 
                 <p>
                     Our support team is available whenever
                     you need us.
                 </p>
+
             </div>
 
         </div>
 
     </section>
+
 
     <!-- ================= HOW IT WORKS ================= -->
 
@@ -2521,6 +1439,7 @@
 
             </div>
 
+
             <div class="step">
 
                 <div class="step-number">
@@ -2536,6 +1455,7 @@
                 </p>
 
             </div>
+
 
             <div class="step">
 
@@ -2556,6 +1476,7 @@
         </div>
 
     </section>
+
 
     <!-- ================= TESTIMONIAL ================= -->
 
@@ -2594,6 +1515,7 @@
 
             </div>
 
+
             <div class="review-card">
 
                 <div class="stars">
@@ -2614,6 +1536,7 @@
                 </span>
 
             </div>
+
 
             <div class="review-card">
 
@@ -2640,6 +1563,7 @@
 
     </section>
 
+
     <!-- ================= FOOTER ================= -->
 
     <footer id="contact">
@@ -2659,6 +1583,7 @@
 
             </div>
 
+
             <div class="footer-links">
 
                 <h3>
@@ -2671,6 +1596,7 @@
                 <a href="#how">How It Works</a>
 
             </div>
+
 
             <div class="footer-contact">
 
@@ -2699,560 +1625,6 @@
         </div>
 
     </footer>
-
-    <!-- ================= JAVASCRIPT ================= -->
-
-    <script>
-
-        const API_BASE_URL = "/api";
-
-        let pendingCarName = null;
-
-        async function readJsonResponse(response) {
-            const contentType = response.headers.get("content-type") || "";
-
-            if (!contentType.includes("application/json")) {
-                throw new Error("The backend returned an unexpected response. Start it with npm start and try again.");
-            }
-
-            return response.json();
-        }
-
-        function showCars() {
-            document.getElementById("cars").scrollIntoView({ behavior: "smooth" });
-        }
-
-        function matchesPrice(price, priceFilter) {
-            if (priceFilter === "budget") return price < 2000;
-            if (priceFilter === "standard") return price >= 2000 && price <= 3000;
-            if (priceFilter === "premium") return price > 3000;
-            return true;
-        }
-
-        function applyHeroFilters() {
-            const typeFilter = document.getElementById("heroCarTypeFilter").value;
-            const priceFilter = document.getElementById("heroCarPriceFilter").value;
-
-            document.querySelectorAll(".car-card").forEach(card => {
-                const carType = card.querySelector(".car-type")?.textContent.trim().toLowerCase() || "";
-                const priceText = card.querySelector(".price strong")?.textContent || "";
-                const price = Number(priceText.replace(/[^0-9]/g, ""));
-                const matchesType = typeFilter === "all" || carType.includes(typeFilter) ||
-                    (typeFilter === "muv" && carType.includes("mpv"));
-                card.hidden = !(matchesType && matchesPrice(price, priceFilter));
-            });
-
-            showCars();
-        }
-
-        // ================= RENT CAR =================
-
-        function rentCar(carName) {
-            const signedInUser = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
-            if (!signedInUser) {
-                pendingCarName = carName;
-                login();
-                return;
-            }
-
-            const carCard = [...document.querySelectorAll(".car-card")].find(card =>
-                card.querySelector("h3")?.textContent.trim() === carName
-            );
-            const sourceImage = carCard?.querySelector("img");
-            const sourceType = carCard?.querySelector(".car-type");
-            const sourcePrice = carCard?.querySelector(".price strong");
-
-            document.getElementById("bookingCarName").textContent = carName;
-            document.getElementById("bookingCarImage").src = sourceImage?.src || "";
-            document.getElementById("bookingCarImage").alt = carName;
-            document.getElementById("bookingCarType").textContent = sourceType?.textContent.trim() || "Rental car";
-            document.getElementById("bookingCarPrice").textContent = sourcePrice?.textContent.trim() || "Price available";
-            document.getElementById("bookingLocation").value = "";
-            document.getElementById("bookingPickupDate").value = "";
-            document.getElementById("bookingPickupTime").value = "09:00";
-            document.getElementById("bookingReturnDate").value = "";
-            document.getElementById("bookingReturnTime").value = "18:00";
-            const today = new Date().toISOString().split("T")[0];
-            document.getElementById("bookingPickupDate").min = today;
-            document.getElementById("bookingReturnDate").min = document.getElementById("bookingPickupDate").value || today;
-            document.getElementById("bookingPickupDate").onchange = function () {
-                document.getElementById("bookingReturnDate").min = this.value || today;
-            };
-            document.getElementById("bookingError").textContent = "";
-            document.getElementById("bookingPage").classList.add("open");
-            document.body.classList.add("booking-view");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-
-        function closeBooking() {
-            document.getElementById("bookingPage").classList.remove("open");
-            document.body.classList.remove("booking-view");
-        }
-
-        async function submitBooking(event) {
-            event.preventDefault();
-            const carName = document.getElementById("bookingCarName").textContent;
-            const location = document.getElementById("bookingLocation").value.trim();
-            const pickupDate = document.getElementById("bookingPickupDate").value;
-            const pickupTime = document.getElementById("bookingPickupTime").value;
-            const returnDate = document.getElementById("bookingReturnDate").value;
-            const returnTime = document.getElementById("bookingReturnTime").value;
-            const today = new Date().toISOString().split("T")[0];
-            const error = document.getElementById("bookingError");
-            const submitButton = document.getElementById("bookingSubmit");
-            const signedInUser = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
-            error.textContent = "";
-
-            if (!location || !pickupDate || !pickupTime || !returnDate || !returnTime) {
-                error.textContent = "Location, dates, and start/end times are required.";
-                return;
-            }
-
-            if (!signedInUser?.email) {
-                error.textContent = "Please log in before confirming your booking.";
-                return;
-            }
-
-            if (pickupDate < today || `${pickupDate}T${pickupTime}` >= `${returnDate}T${returnTime}`) {
-                error.textContent = "Choose a future range with the end after the start.";
-                return;
-            }
-
-            submitButton.disabled = true;
-            submitButton.textContent = "Confirming...";
-            try {
-                const response = await fetch(`${API_BASE_URL}/bookings`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        carName,
-                        location,
-                        pickupDate,
-                        pickupTime,
-                        returnDate,
-                        returnTime,
-                        userEmail: signedInUser?.email,
-                        image: document.getElementById("bookingCarImage").src
-                    })
-                });
-                const result = await readJsonResponse(response);
-
-                if (!response.ok) {
-                    throw new Error(result.error || "Unable to create booking.");
-                }
-
-                const savedBookings = getCurrentUserBookings();
-                const savedBooking = {
-                    ...result.booking,
-                    image: document.getElementById("bookingCarImage").src
-                };
-                savedBookings.unshift(savedBooking);
-                saveCurrentUserBookings(savedBookings);
-                closeBooking();
-                showThankYou(savedBooking);
-            } catch (error) {
-                document.getElementById("bookingError").textContent = error.message || "Unable to connect to the backend.";
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = "Confirm booking";
-            }
-        }
-
-        function showThankYou(booking) {
-            document.getElementById("thankyouCarImage").src = booking.image || "";
-            document.getElementById("thankyouCarImage").alt = booking.carName;
-            document.getElementById("thankyouCar").textContent = booking.carName;
-            document.getElementById("thankyouDates").textContent = `${booking.pickupDate} ${booking.pickupTime} to ${booking.returnDate} ${booking.returnTime}`;
-            document.getElementById("thankyouLocation").textContent = `Pick-up: ${booking.location}`;
-            document.getElementById("thankyouPage").classList.add("open");
-            document.body.classList.add("thankyou-view");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-
-        function closeThankYou() {
-            document.getElementById("thankyouPage").classList.remove("open");
-            document.body.classList.remove("thankyou-view");
-        }
-
-        function showThankYouAccount() {
-            const user = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
-            closeThankYou();
-            if (user) {
-                showAccount(user, false);
-            } else {
-                signup();
-            }
-        }
-
-
-        // ================= LOGIN =================
-
-        function login() {
-            showAuthForm("login");
-            document.getElementById("authModal").classList.add("open");
-            document.getElementById("authEmail").focus();
-        }
-
-
-        // ================= SIGN UP =================
-
-        function signup() {
-            showAuthForm("signup");
-            document.getElementById("authModal").classList.add("open");
-            document.getElementById("authName").focus();
-        }
-
-        function closeAuth() {
-            document.getElementById("authModal").classList.remove("open");
-        }
-
-        function showAuthForm(mode) {
-            const isSignup = mode === "signup";
-            document.getElementById("authTitle").textContent = isSignup ? "Create your account" : "Welcome back";
-            document.getElementById("authSubtitle").textContent = isSignup
-                ? "Sign up to make every trip easier."
-                : "Log in to manage your bookings.";
-            document.getElementById("authSubmit").textContent = isSignup ? "Create Account" : "Log In";
-            document.getElementById("nameField").hidden = !isSignup;
-            document.getElementById("authName").required = isSignup;
-            document.getElementById("authPassword").autocomplete = isSignup ? "new-password" : "current-password";
-            document.getElementById("loginTab").classList.toggle("active", !isSignup);
-            document.getElementById("signupTab").classList.toggle("active", isSignup);
-            document.getElementById("authError").textContent = "";
-        }
-
-        async function submitAuth(event) {
-            event.preventDefault();
-            const isSignup = !document.getElementById("nameField").hidden;
-            const submitButton = document.getElementById("authSubmit");
-            const error = document.getElementById("authError");
-            submitButton.disabled = true;
-            submitButton.textContent = isSignup ? "Creating account..." : "Logging in...";
-            error.textContent = "";
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/auth/${isSignup ? "signup" : "login"}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        name: document.getElementById("authName").value.trim(),
-                        email: document.getElementById("authEmail").value.trim(),
-                        password: document.getElementById("authPassword").value
-                    })
-                });
-                const result = await readJsonResponse(response);
-                if (!response.ok) {
-                    throw new Error(result.error || "Unable to complete authentication.");
-                }
-
-                localStorage.setItem("driveEasyUser", JSON.stringify(result.user));
-                closeAuth();
-                event.target.reset();
-                if (pendingCarName) {
-                    const selectedCar = pendingCarName;
-                    pendingCarName = null;
-                    closeAccount();
-                    rentCar(selectedCar);
-                } else {
-                    showAccount(result.user, isSignup);
-                }
-            } catch (authError) {
-                error.textContent = authError.message || "Unable to connect to the backend.";
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = isSignup ? "Create Account" : "Log In";
-            }
-        }
-
-        let cancellationBookingId = null;
-
-        function getUserStorageKey(userEmail) {
-            return `driveEasyBookings_${String(userEmail || "").trim().toLowerCase()}`;
-        }
-
-        function getCurrentUserBookings() {
-            const user = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
-            if (!user?.email) {
-                return [];
-            }
-            return JSON.parse(localStorage.getItem(getUserStorageKey(user.email)) || "[]");
-        }
-
-        function saveCurrentUserBookings(bookings) {
-            const user = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
-            if (!user?.email) {
-                return;
-            }
-            localStorage.setItem(getUserStorageKey(user.email), JSON.stringify(bookings));
-        }
-
-        async function syncAccountBookings(userEmail) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/bookings?email=${encodeURIComponent(userEmail)}`);
-                const result = await readJsonResponse(response);
-                if (!response.ok) {
-                    throw new Error(result.error || "Unable to load bookings.");
-                }
-                localStorage.setItem(getUserStorageKey(userEmail), JSON.stringify(result.bookings));
-                renderAccountBookings();
-                return true;
-            } catch (error) {
-                console.error("Unable to sync account bookings:", error.message);
-                return false;
-            }
-        }
-
-        function renderAccountBookings() {
-            const bookings = getCurrentUserBookings();
-            const bookingCount = document.getElementById("accountBookingCount");
-            const bookingList = document.getElementById("accountBookingList");
-            bookingCount.textContent = bookings.length;
-            bookingList.replaceChildren();
-
-            if (!bookings.length) {
-                const emptyMessage = document.createElement("p");
-                emptyMessage.textContent = "Your upcoming car rentals will appear here after you book a vehicle.";
-                bookingList.appendChild(emptyMessage);
-                return;
-            }
-
-            bookings.forEach(booking => {
-                const record = document.createElement("div");
-                const image = document.createElement("img");
-                const content = document.createElement("div");
-                const car = document.createElement("strong");
-                const details = document.createElement("span");
-                const actions = document.createElement("div");
-                const cancelButton = document.createElement("button");
-                record.className = "booking-record";
-                image.src = booking.image || "";
-                image.alt = booking.carName;
-                image.hidden = !booking.image;
-                content.className = "booking-record-content";
-                actions.className = "booking-record-actions";
-                cancelButton.className = "cancel-booking-btn";
-                cancelButton.type = "button";
-                cancelButton.textContent = "Cancel booking";
-                cancelButton.addEventListener("click", () => openCancellation(booking.id));
-                car.textContent = booking.carName;
-                details.textContent = `${booking.pickupDate} ${booking.pickupTime} to ${booking.returnDate} ${booking.returnTime} | Pick-up: ${booking.location}`;
-                actions.appendChild(cancelButton);
-                content.append(car, details, actions);
-                record.append(image, content);
-                bookingList.appendChild(record);
-            });
-        }
-
-        async function openCancellation(bookingId) {
-            let booking = getCurrentUserBookings().find(item => String(item.id) === String(bookingId));
-            const user = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
-
-            if (user?.email) {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/bookings?email=${encodeURIComponent(user.email)}`);
-                    const result = await readJsonResponse(response);
-                    if (response.ok) {
-                        saveCurrentUserBookings(result.bookings);
-                        renderAccountBookings();
-                        booking = result.bookings.find(item => String(item.id) === String(bookingId));
-                    }
-                } catch (error) {
-                    console.error("Unable to refresh booking before cancellation:", error.message);
-                }
-            }
-
-            if (!booking) {
-                return;
-            }
-
-            cancellationBookingId = booking.id;
-            document.getElementById("cancelBookingSummary").textContent =
-                `Cancel ${booking.carName} booked from ${booking.pickupDate} ${booking.pickupTime} to ${booking.returnDate} ${booking.returnTime}? This action cannot be undone.`;
-            document.getElementById("cancelReason").value = "";
-            document.getElementById("cancelError").textContent = "";
-            document.getElementById("cancelModal").classList.add("open");
-            document.body.classList.add("cancellation-form-view");
-            document.getElementById("cancelReason").focus();
-        }
-
-        function closeCancellation() {
-            cancellationBookingId = null;
-            document.getElementById("cancelModal").classList.remove("open");
-            document.body.classList.remove("cancellation-form-view");
-        }
-
-        async function confirmCancellation() {
-            const reason = document.getElementById("cancelReason").value.trim();
-            const error = document.getElementById("cancelError");
-            const confirmButton = document.getElementById("cancelConfirm");
-            const savedBookings = getCurrentUserBookings();
-            const selectedBooking = savedBookings.find(
-                booking => String(booking.id) === String(cancellationBookingId)
-            );
-            if (!cancellationBookingId) {
-                error.textContent = "Select a booking before confirming cancellation.";
-                return;
-            }
-            if (!selectedBooking) {
-                error.textContent = "This booking is no longer in your account.";
-                return;
-            }
-            if (!reason) {
-                error.textContent = "Please enter a reason before confirming cancellation.";
-                return;
-            }
-
-            confirmButton.disabled = true;
-            confirmButton.textContent = "Cancelling...";
-            error.textContent = "";
-            try {
-                const response = await fetch(`${API_BASE_URL}/bookings/${cancellationBookingId}`, {
-                    method: "DELETE",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        reason,
-                        userEmail: JSON.parse(localStorage.getItem("driveEasyUser") || "null")?.email
-                    })
-                });
-                const result = await readJsonResponse(response);
-                if (!response.ok) {
-                    throw new Error(result.error || "Unable to cancel booking.");
-                }
-
-                const remainingBookings = savedBookings
-                    .filter(booking => String(booking.id) !== String(cancellationBookingId));
-                saveCurrentUserBookings(remainingBookings);
-                const cancelledBooking = result.booking || selectedBooking;
-                closeCancellation();
-                renderAccountBookings();
-                showCancellationSuccess(cancelledBooking, reason);
-            } catch (cancellationError) {
-                error.textContent = cancellationError instanceof TypeError
-                    ? "The booking service is offline. Start the app with npm start, then try again."
-                    : cancellationError.message || "Unable to cancel booking.";
-            } finally {
-                confirmButton.disabled = false;
-                confirmButton.textContent = "Confirm cancellation";
-            }
-        }
-
-        function showCancellationSuccess(booking, reason) {
-            document.getElementById("cancelledCar").textContent = booking.carName;
-            document.getElementById("cancelledDates").textContent = `${booking.pickupDate} ${booking.pickupTime} to ${booking.returnDate} ${booking.returnTime}`;
-            document.getElementById("cancelledReason").textContent = `Reason: ${reason}`;
-            document.getElementById("cancellationPage").classList.add("open");
-            document.body.classList.add("cancellation-view");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-
-        function closeCancellationSuccess() {
-            document.getElementById("cancellationPage").classList.remove("open");
-            document.body.classList.remove("cancellation-view");
-        }
-
-        function showCancellationAccount() {
-            const user = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
-            closeCancellationSuccess();
-            if (user) {
-                showAccount(user, false);
-            } else {
-                login();
-            }
-        }
-
-        async function showAccount(user, isSignup) {
-            document.getElementById("accountTitle").textContent = isSignup ? "Account created" : "Login successful";
-            document.getElementById("accountMessage").textContent = isSignup
-                ? `Welcome to DriveEasy, ${user.name}. Your account is ready.`
-                : `Welcome back, ${user.name}. You are now signed in.`;
-            document.getElementById("accountName").textContent = user.name;
-            document.getElementById("accountEmail").textContent = user.email;
-            renderAccountBookings();
-            await syncAccountBookings(user.email);
-            document.getElementById("accountModal").classList.add("open");
-            document.body.classList.add("account-view");
-            document.querySelector(".login-btn").style.display = "none";
-            document.querySelector(".signup-btn").style.display = "none";
-            document.getElementById("accountNavBtn").style.display = "block";
-        }
-
-        function openAccount() {
-            const user = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
-            if (user) {
-                showAccount(user, false);
-            }
-        }
-
-        function closeAccount() {
-            document.getElementById("accountModal").classList.remove("open");
-            document.body.classList.remove("account-view");
-        }
-
-        function logout() {
-            localStorage.removeItem("driveEasyUser");
-            closeAccount();
-            document.querySelector(".login-btn").style.display = "block";
-            document.querySelector(".signup-btn").style.display = "block";
-            document.getElementById("accountNavBtn").style.display = "none";
-        }
-
-        document.getElementById("authModal").addEventListener("click", function (event) {
-            if (event.target === event.currentTarget) {
-                closeAuth();
-            }
-        });
-
-        document.getElementById("accountModal").addEventListener("click", function (event) {
-            if (event.target === event.currentTarget) {
-                closeAccount();
-            }
-        });
-
-        const savedUser = JSON.parse(localStorage.getItem("driveEasyUser") || "null");
-        if (savedUser) {
-            showAccount(savedUser, false).then(() => closeAccount());
-        }
-
-
-        // ================= MOBILE MENU =================
-
-        const menuBtn =
-            document.getElementById("menuBtn");
-
-        const navLinks =
-            document.getElementById("navLinks");
-
-        menuBtn.addEventListener("click", function () {
-
-            if (navLinks.style.display === "flex") {
-
-                navLinks.style.display = "none";
-
-            } else {
-
-                navLinks.style.display = "flex";
-
-                navLinks.style.flexDirection = "column";
-
-                navLinks.style.position = "absolute";
-
-                navLinks.style.top = "70px";
-
-                navLinks.style.right = "20px";
-
-                navLinks.style.background = "white";
-
-                navLinks.style.padding = "20px";
-
-                navLinks.style.borderRadius = "10px";
-
-                navLinks.style.boxShadow =
-                    "0 5px 20px rgba(0,0,0,0.15)";
-            }
-
-        });
-
-    </script>
 
 </body>
 </html>
