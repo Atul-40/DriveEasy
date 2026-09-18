@@ -5,7 +5,8 @@ const crypto = require('crypto');
 const { DatabaseSync } = require('node:sqlite');
 const { URL } = require('url');
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
+const HOST = '0.0.0.0';
 const ROOT = path.join(__dirname, '..');
 const USERS_FILE = path.join(__dirname, 'users.json');
 const DATABASE_FILE = path.join(__dirname, 'driveeasy.db');
@@ -417,7 +418,14 @@ async function deleteUser(id){const row=document.querySelector('tr[data-user-id=
       return;
     }
 
-    const contentType = path.extname(filePath) === '.html' ? 'text/html; charset=utf-8' : 'application/octet-stream';
+    const contentTypes = {
+      '.css': 'text/css; charset=utf-8',
+      '.html': 'text/html; charset=utf-8',
+      '.js': 'text/javascript; charset=utf-8',
+      '.json': 'application/json; charset=utf-8',
+      '.svg': 'image/svg+xml',
+    };
+    const contentType = contentTypes[path.extname(filePath).toLowerCase()] || 'application/octet-stream';
     response.writeHead(200, { 'Content-Type': contentType });
     fs.createReadStream(filePath).pipe(response);
     return;
@@ -426,6 +434,6 @@ async function deleteUser(id){const row=document.querySelector('tr[data-user-id=
   sendJson(response, 404, { error: 'Not found' });
 });
 
-server.listen(PORT, () => {
-  console.log(`DriveEasy is running at http://localhost:${PORT}`);
+server.listen(PORT, HOST, () => {
+  console.log(`DriveEasy is running at http://${HOST}:${PORT}`);
 });
